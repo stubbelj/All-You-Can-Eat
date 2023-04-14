@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //InitLevel();
+        InitLevel();
     }
 
     // Update is called once per frame
@@ -32,7 +32,7 @@ public class GameManager : MonoBehaviour
         
     }
 
-    /*void InitLevel(int level=0) {
+    void InitLevel(int level=0) {
         //initialize the floor layout for the level
         //first, create a sparse tree where nodes represent composites (chunks of several rooms) 
         //leaf nodes are composites that end in unique rooms (rewards, bosses,  shops) others are the normal gameplay loop
@@ -57,7 +57,6 @@ public class GameManager : MonoBehaviour
         graph.root.data = "root";
         int i = compositeQuantity[level].Item1;
         Node curr = graph.root;
-        Node prev;
         while (i > 0) {
             //place normal nodes
             Node newNode = new Node(newData:"normal");
@@ -66,27 +65,35 @@ public class GameManager : MonoBehaviour
             curr = newNode;
             i--;
         }
+        Node endNode = new Node(newData:"end");
+        curr.adj.Add(endNode);
+        endNode.adj.Add(curr);
+        //place end node, which is connected to last normal node
         i = compositeQuantity[level].Item1;
         curr = graph.root.adj[0];
         while (i > 0) {
             //place special nodes
             Node newNode = new Node(newData:"special");
             curr.adj.Add(newNode);
-            curr = curr.adj[0];
+            curr = curr.adj[1];
             i--;
         }
-        print(curr.data);
-        Node endNode = new Node(newData:"end");
-        curr.adj.Add(endNode);
-        endNode.adj.Add(curr);
 
-        curr = graph.root;
+        /*curr = graph.root;
         for(int j = 0; j < 2; j++) {
             print("adjacent nodes are: ");
             foreach(Node node in curr.adj) {
                 print(node.data);
             }
             curr = curr.adj[0];
+        }*/
+
+        curr = graph.root;
+        while(true) {
+            if (curr.adj.Contains(new Node(newData: "end"))) {
+                //double check that this works
+                break;
+            }
         }
-    }*/
+    }
 }
