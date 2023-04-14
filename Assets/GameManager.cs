@@ -30,4 +30,10 @@ public class GameManager : MonoBehaviour
     {
         
     }
+
+    /*void InitLevel(int level) {
+        Dictionary<int, int> roomQuantities = new Dictionary<int, int>() {
+            //
+        }
+    }*/
 }

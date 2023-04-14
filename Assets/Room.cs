@@ -10,7 +10,7 @@ public class Room : MonoBehaviour
     void Start()
     {
         gameManager = GameManager.inst;
-        r = gameManager.r;
+        //r = gameManager.r;
     }
 
     // Update is called once per frame
@@ -19,7 +19,7 @@ public class Room : MonoBehaviour
         
     }
 
-    Room Init(string type = null) {
+    /*Room Init(string type = null) {
         List<string> roomTypes = new List<string>{
             "empty",
             "oneEnemy"
@@ -36,5 +36,5 @@ public class Room : MonoBehaviour
                 //init enemy
                 break;
         }
-    }
+    }*/
 }
