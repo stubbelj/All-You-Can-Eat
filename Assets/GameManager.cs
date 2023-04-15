@@ -6,11 +6,14 @@ using static Utils;
 public class GameManager : MonoBehaviour
 {
     public static GameManager inst = null;
+    //there is always ONLY ONE GameManger object, which stores important values for other scripts. in cases like this it is called a "singleton" and GameManager.inst is a reference to that
+    //object. this is great because having only ONE object means that all scripts will have the same value for something like gameManager.currentFloor, whereas if you made a new GameManager
+    //for each script you would have to update every script manually every time you changed the value of currentFloor.
 
     public Player player;
     public List<GameObject> roomPrefabs = new List<GameObject>();
 
-    int level = 0;
+    int level = 1;
     System.Random r = new System.Random();
 
     void Awake() {
@@ -43,7 +46,6 @@ public class GameManager : MonoBehaviour
             if (newMargin > compositeOverlapMargin) { compositeOverlapMargin = newMargin; }
         }
         compositeOverlapMargin *= 5;
-        print("compositeOverlapMargin: " + compositeOverlapMargin);
         //factor of how many max size rooms apart composites are
 
         (int, int)[] compositeQuantity = new (int, int)[] {(1, 1), (3, 1), (6, 2)};
