@@ -6,8 +6,9 @@ using TMPro;
 public class Player : MonoBehaviour
 {
     public TMP_Text healthText;
+    public Weapon currWeapon;
 
-    float moveSpeed = 2f;
+    float moveSpeed = 100f;
     int health = 5;
 
     // Start is called before the first frame update
@@ -34,11 +35,15 @@ public class Player : MonoBehaviour
         if (Input.GetKey("d")) {
             transform.position += Vector3.right * moveSpeed * Time.deltaTime;
         }
+
+        if(Input.GetKey("space")) {
+            StartCoroutine(currWeapon.Attack());
+        }
     }
 
     void OnCollisionEnter2D (Collision2D col) {
         //handle collisions
-        //calls to TakeDamage should happen on the damage source's script so that information can be easily passed about the type of damage
+        //calls to TakeDamage should happen on the damage source's script so that information can be easily passed about the damage
     }
 
     public void TakeDamage(int damage) {
