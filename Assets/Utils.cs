@@ -16,17 +16,31 @@ public class Utils
         }
     }
 
-    public static bool OverlapTransforms(((float, float), (float, float)) transform, List<((float, float), (float, float))> transformList) {
-        return true;
+    public static bool OverlapTransforms(((float, float), (float, float)) bound, List<((float, float), (float, float))> boundList, float errorMargin = 0) {
+        foreach (((float, float), (float, float)) testBound in boundList) {
+            if (bound.Item1.Item2 < testBound.Item1.Item1 - errorMargin) { continue; }
+            if (bound.Item1.Item1 > testBound.Item1.Item2 + errorMargin) { continue; }
+            if (bound.Item2.Item2 < testBound.Item2.Item1 - errorMargin) { continue; }
+            if (bound.Item2.Item1 > testBound.Item2.Item2 + errorMargin) { continue; }
+            return true;
+        }
+        return false;
     }
 
-    public static bool OverlapTransforms(GameObject gameObj, List<GameObject> gameObjList) {
-        ((float, float), (float, float)) transform = BoundsFromGameObject(gameObj);
-        List<((float, float), (float, float))> transformList = new List<((float, float), (float, float))>();
+    public static bool OverlapTransforms(GameObject gameObj, List<GameObject> gameObjList, float errorMargin = 0) {
+        ((float, float), (float, float)) bound = BoundsFromGameObject(gameObj);
+        List<((float, float), (float, float))> boundList = new List<((float, float), (float, float))>();
         foreach(GameObject obj in gameObjList) {
-            transformList.Add(BoundsFromGameObject(obj));
+            boundList.Add(BoundsFromGameObject(obj));
         }
-        return true;
+        foreach (((float, float), (float, float)) testBound in boundList) {
+            if (bound.Item1.Item2 < testBound.Item1.Item1 - errorMargin) { continue; }
+            if (bound.Item1.Item1 > testBound.Item1.Item2 + errorMargin) { continue; }
+            if (bound.Item2.Item2 < testBound.Item2.Item1 - errorMargin) { continue; }
+            if (bound.Item2.Item1 > testBound.Item2.Item2 + errorMargin) { continue; }
+            return true;
+        }
+        return false;
     }
 
     public static ((float, float), (float, float)) BoundsFromGameObject(GameObject gameObj) {

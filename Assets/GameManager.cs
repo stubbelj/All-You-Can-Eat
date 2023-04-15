@@ -36,11 +36,16 @@ public class GameManager : MonoBehaviour
 
     void InitLevel() {
         //initialize the floor layout for the level
-        //first, create a sparse tree where nodes represent composites (chunks of several rooms) 
-        //leaf nodes are composites that end in unique rooms (rewards, bosses,  shops) others are the normal gameplay loop
-        //next, determine a composite to use for each node
-        //generate each composite - necessitates generating rooms and connecting hallways
-        //connect non-leaf composites by a single hallway at their origins/endpoints
+        float compositeOverlapMargin = 0;
+        //minimum distance between composites
+        foreach(GameObject roomPref in roomPrefabs) {
+            float newMargin = Mathf.Max(roomPref.GetComponent<SpriteRenderer>().sprite.bounds.size.x, roomPref.GetComponent<SpriteRenderer>().sprite.bounds.size.y);
+            if (newMargin > compositeOverlapMargin) { compositeOverlapMargin = newMargin; }
+        }
+        compositeOverlapMargin *= 5;
+        print("compositeOverlapMargin: " + compositeOverlapMargin);
+        //factor of how many max size rooms apart composites are
+
         (int, int)[] compositeQuantity = new (int, int)[] {(1, 1), (3, 1), (6, 2)};
         //number of composites to load for each level BESIDES the start room, of normal and special types
         Graph graph = new Graph();
@@ -72,7 +77,7 @@ public class GameManager : MonoBehaviour
 
         /*curr = graph.root;
         for(int j = 0; j < 2; j++) {
-            print("adjacent nodes are: ");
+            print("adjacent nodes to " + curr.data + "are: ");
             foreach(Node node in curr.adj) {
                 print(node.data);
             }
@@ -83,51 +88,86 @@ public class GameManager : MonoBehaviour
         List<((float, float), (float, float))> spawnedCompositeBounds = new List<((float, float), (float, float))>();
         curr = graph.root.adj[0];
         //initialize curr as first normal node
-        int debugCounter = 100;
-        while(debugCounter > 0) {
+        while(curr.data != "end") {
             //traverse through nodes, generating them as you go
-
             (List<GameObject>, ((float, float), (float, float))) currComposite = GenerateComposite(curr);
             //generate current normal composite
-            while (OverlapTransforms(currComposite.Item2, spawnedCompositeBounds)) {
+            //int overlapDebugCounter1 = 100;
+            while (OverlapTransforms(currComposite.Item2, spawnedCompositeBounds, errorMargin : compositeOverlapMargin) /*&& overlapDebugCounter1 > 0*/) {
                 //check if newly spawned composite overlaps with any previous composites. if so, move it
+                /*if (true) {
+                    print("overlapDebugCounter1: " + overlapDebugCounter1);
+                    print(currComposite.Item2);
+                    foreach(((float, float), (float, float)) boundsItem in spawnedCompositeBounds) {
+                        print(boundsItem);
+                    }
+                    print(OverlapTransforms(currComposite.Item2, spawnedCompositeBounds));
+                }*/
+                float maxSizeInComposite = 0;
+                foreach(GameObject room in currComposite.Item1) {
+                    float newSize = Mathf.Max(room.GetComponent<SpriteRenderer>().sprite.bounds.size.x, room.GetComponent<SpriteRenderer>().sprite.bounds.size.y);
+                    if (newSize > maxSizeInComposite) { maxSizeInComposite = newSize; }
+                }
                 int j = r.Next(0, units.Length);
+                Vector3 roomShift = units[j] * maxSizeInComposite;
                 foreach (GameObject room in currComposite.Item1) {
                     //move each room in composite
-                    room.transform.position += units[j] * (j <= 1 ? room.GetComponent<SpriteRenderer>().sprite.bounds.size.y : room.GetComponent<SpriteRenderer>().sprite.bounds.size.x);
+                    room.transform.position += roomShift;
                 }
+                currComposite.Item2.Item1.Item1 += roomShift.x;
+                currComposite.Item2.Item1.Item2 += roomShift.x;
+                currComposite.Item2.Item2.Item1 += roomShift.y;
+                currComposite.Item2.Item2.Item2 += roomShift.y;
+                //overlapDebugCounter1--;
             }
+            //print(overlapDebugCounter1);
+
             spawnedCompositeBounds.Add(currComposite.Item2);
             //add current normal composite to composite bounds list
             foreach(Node node in curr.adj) {
                 //generate composites adjacent to the normal composite
                 if (node.data != "normal") {
                     //don't generate the next normal composite yet
+                    //int overlapDebugCounter2 = 100;
                     (List<GameObject>, ((float, float), (float, float))) adjComposite = GenerateComposite(node);
-                    while (OverlapTransforms(adjComposite.Item2, spawnedCompositeBounds)) {
+                    while (OverlapTransforms(adjComposite.Item2, spawnedCompositeBounds, errorMargin : compositeOverlapMargin) /*&& overlapDebugCounter2 > 0*/) {
                     
                         //check if newly spawned adj composite overlaps with any previous composites. if so, move it
+                        float maxSizeInComposite = 0;
+                        foreach(GameObject room in adjComposite.Item1) {
+                            float newSize = Mathf.Max(room.GetComponent<SpriteRenderer>().sprite.bounds.size.x, room.GetComponent<SpriteRenderer>().sprite.bounds.size.y);
+                            if (newSize > maxSizeInComposite) { maxSizeInComposite = newSize; }
+                        }
                         int j = r.Next(0, units.Length);
+                        Vector3 roomShift = units[j] * maxSizeInComposite;
                         foreach (GameObject room in adjComposite.Item1) {
                             //move each room in composite
-                            room.transform.position += units[j] * (j <= 1 ? room.GetComponent<SpriteRenderer>().sprite.bounds.size.y : room.GetComponent<SpriteRenderer>().sprite.bounds.size.x);
+                            room.transform.position += roomShift;
                         }
+                        adjComposite.Item2.Item1.Item1 += roomShift.x;
+                        adjComposite.Item2.Item1.Item2 += roomShift.x;
+                        adjComposite.Item2.Item2.Item1 += roomShift.y;
+                        adjComposite.Item2.Item2.Item2 += roomShift.y;
+                        //overlapDebugCounter2--;
                     }
+                    //print(overlapDebugCounter2);
                     spawnedCompositeBounds.Add(adjComposite.Item2);
                     //add current adj composite to composite bounds list
                 }
             }
-            if (curr.data == "end") {
-                //stop traversing if at last node
-                break;
-            }
             curr = curr.adj[1];
             //move to the next normal node
-            debugCounter--;
         }
     }
 
     (List<GameObject>, ((float, float), (float, float))) GenerateComposite(Node node) {
+        float roomOverlapMargin = 0;
+        //minimum distance between rooms
+        foreach(GameObject roomPref in roomPrefabs) {
+            float newMargin = Mathf.Max(roomPref.GetComponent<SpriteRenderer>().sprite.bounds.size.x, roomPref.GetComponent<SpriteRenderer>().sprite.bounds.size.y);
+            if (newMargin > roomOverlapMargin) { roomOverlapMargin = newMargin; }
+        }
+        roomOverlapMargin *= 0;
         //generates a room composite, a series of 4 connected rooms
         string[][] normalCompositeTypes = new string[][] {
             new string[] {"enemySmall"},
@@ -176,8 +216,10 @@ public class GameManager : MonoBehaviour
         Vector3[] units = new Vector3[] {Vector3.up, Vector3.down, Vector3.left, Vector3.right};
         List<GameObject> spawnedRooms = new List<GameObject>();
         foreach(string roomType in roomSpawnList) {
+            //spawn each room!
             GameObject newRoom = GameObject.Instantiate(roomPrefabs[roomIndexes[roomType][r.Next(0, roomIndexes[roomType].Length)]]);
-            while (OverlapTransforms(newRoom, spawnedRooms)) {
+            newRoom.name = "Composite of nodal type: " + node.data;
+            while (OverlapTransforms(newRoom, spawnedRooms, errorMargin : roomOverlapMargin)) {
             
             //while overlapping with any of the rooms in the composite, keep shifting room
                 int i = r.Next(0, units.Length);
@@ -188,9 +230,11 @@ public class GameManager : MonoBehaviour
         }
 
         List<GameObject> roomsListVal = new List<GameObject>();
-        ((float, float), (float, float)) boundsVal = ((roomsListVal[0].transform.position.x, roomsListVal[0].transform.position.x), (roomsListVal[0].transform.position.y, roomsListVal[0].transform.position.y));
         foreach(GameObject obj in spawnedRooms) {
             roomsListVal.Add(obj);
+        }
+        ((float, float), (float, float)) boundsVal = ((roomsListVal[0].transform.position.x, roomsListVal[0].transform.position.x), (roomsListVal[0].transform.position.y, roomsListVal[0].transform.position.y));
+        foreach(GameObject obj in spawnedRooms) {
             if (obj.transform.position.x - obj.GetComponent<SpriteRenderer>().bounds.size.x / 2 < boundsVal.Item1.Item1) {
                 boundsVal.Item1.Item1 = obj.transform.position.x - obj.GetComponent<SpriteRenderer>().bounds.size.x / 2;
             }
