@@ -56,6 +56,6 @@ public class Player : MonoBehaviour
     }
 
     void Die() {
-        print("You died!");
+        //dead
     }
 }
