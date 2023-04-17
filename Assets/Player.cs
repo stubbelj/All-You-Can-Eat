@@ -7,13 +7,15 @@ public class Player : MonoBehaviour
 {
     public TMP_Text healthText;
     public Weapon currWeapon;
+    public GameObject inventoryMenu;
+
 
     float moveSpeed = 1000f;
     float maxSpeed = 150f;
     int health = 5;
+    float pauseDelay = 0.1f;
 
-    public Rigidbody2D rb;
-
+    Rigidbody2D rb;
     // Start is called before the first frame update
     void Start()
     {
@@ -45,6 +47,20 @@ public class Player : MonoBehaviour
         if(Input.GetKey("space")) {
             StartCoroutine(currWeapon.Attack());
         }
+
+        if (Input.GetKey("escape") && pauseDelay == 0) {
+            pauseDelay = 0.1f;
+            if (Time.timeScale == 1) {
+                Time.timeScale = 0;
+            } else {
+                Time.timeScale = 1;
+            }
+            ToggleInventory();
+        }
+
+        pauseDelay -= Time.unscaledDeltaTime;
+        pauseDelay = Mathf.Clamp(pauseDelay, 0, 0.1f);
+
     }
 
     void OnCollisionEnter2D (Collision2D col) {
@@ -63,5 +79,9 @@ public class Player : MonoBehaviour
 
     void Die() {
         //dead
+    }
+
+    void ToggleInventory() {
+        inventoryMenu.SetActive(!inventoryMenu.activeSelf);
     }
 }
