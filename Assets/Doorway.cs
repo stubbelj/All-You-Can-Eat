@@ -7,7 +7,6 @@ public class Doorway : MonoBehaviour
     public Room room;
 
     void OnTriggerEnter2D(Collider2D col) {
-        print("collidede");
         if (col.gameObject.tag == "Player") {
             room.DoorwayTrigger(gameObject);
         }

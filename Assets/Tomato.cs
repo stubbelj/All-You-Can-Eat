@@ -15,12 +15,15 @@ public class Tomato : Enemy
     //this is the player - we will get the reference for it from the GameManager in Start()
     Animator anim;
     //this is an animator component on this object, which runs animation
+    Rigidbody2D rb;
+    //the rigidbody component, which is a component used for physics operations like collision, velocity or mass
     string currAnimState;
     //holds the current animation state
 
     int contactDamage = 1;
-    float moveSpeed = 50f;
+    float moveSpeed = 1000f;
     //having a variable like moveSpeed is useful for tweaking enemy behaviour!
+    float maxSpeed = 100f;
     int health = 1;
     //squishy lil guy
 
@@ -36,7 +39,8 @@ public class Tomato : Enemy
         player = gameManager.player;
         //for example, here the gameManager has a reference to the player!
         anim = gameObject.GetComponent<Animator>();
-        //syntax to get components attached to this game object
+        //syntax to get the Animator component attached to this game object
+        rb = gameObject.GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
@@ -47,15 +51,16 @@ public class Tomato : Enemy
         //if (minionCount < 3) { SpawnMinions(); }
         //if (state == "buff") { BuffMinions(); }
 
-        Vector3 dirVec = player.gameObject.transform.position - transform.position;
+        Vector2 dirVec = player.gameObject.transform.position - transform.position;
         //create vector pointing towards player
         if (dirVec.magnitude > 5f) {
             //do not move if you are pretty much on top of player to avoid jitter
-            transform.position += dirVec.normalized * moveSpeed * Time.deltaTime;
+            rb.velocity += dirVec.normalized * moveSpeed * Time.deltaTime;
             //Time.deltaTime is important because frames (NOT the same as render frames, like what you mean when you say "I'm running this at 60fps") happen inconsistently
             //Time.deltaTime is the amount of time since the last frame was processed. use this anytime you need something to happen smoothly, like movement
             //also common to use this along with Lerping(Linear Interpolation)
             //dirVec is normalized so that direction is preserved, but movement speed does not change based on distance to the player
+            rb.velocity = Vector2.ClampMagnitude(rb.velocity, maxSpeed);
             ChangeAnimationState("tempTomatoWalk");
             //play the walking animation if nothing else is playing
         }
