@@ -2,39 +2,47 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Room : MonoBehaviour
+public abstract class Room : MonoBehaviour
 {
     GameManager gameManager;
-    System.Random r;
-    // Start is called before the first frame update
-    void Start()
+    public System.Random r;
+
+    public float[] bounds;
+    //xmin, xmax, ymin, ymax
+    [HideInInspector]
+    public float width = 140f;
+    [HideInInspector]
+    public float height = 140f;
+    //width, height
+    public List<Transform> spawnPoints = new List<Transform>();
+    public List<Transform> doorways = new List<Transform>();
+
+    string state = "inactive";
+    //inactive, active, complete
+
+    void Awake()
     {
         gameManager = GameManager.inst;
-        //r = gameManager.r;
+        r = gameManager.r;
+        bounds = new float[]{transform.position.x - width / 2, transform.position.x + width / 2, transform.position.y - width / 2, transform.position.y +  width / 2};
     }
 
-    // Update is called once per frame
     void Update()
     {
         
     }
 
-    /*Room Init(string type = null) {
-        List<string> roomTypes = new List<string>{
-            "empty",
-            "oneEnemy"
-        };
-        if (type == null) {
-            type = roomTypes[r.Next(0, roomTypes.Count)];
+    public void DoorwayTrigger(GameObject doorway) {
+        if (state == "inactive") {
+            state = "active";
+            Activate();
         }
-        switch(type) {
-            case "empty":
-                //init walls/floor
-                break;
-            case "oneEnemy":
-                //init walls/floor
-                //init enemy
-                break;
-        }
-    }*/
+    }
+
+    public float[] GetBounds() {
+        bounds = new float[]{transform.position.x - width / 2, transform.position.x + width / 2, transform.position.y - width / 2, transform.position.y +  width / 2};
+        return bounds;
+    }
+
+    public abstract void Activate();
 }
