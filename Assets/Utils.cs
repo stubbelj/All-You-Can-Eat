@@ -32,7 +32,7 @@ public class Utils
     }
 
     public static bool OverlapTransforms(GameObject gameObj, List<GameObject> gameObjList, float errorMargin = 0) {
-        //checks if the sprites of two gameObjects overlap
+        //checks if the bounds of two gameObjects overlap
         float[] bound = BoundsFromRoom(gameObj.GetComponent<Room>());
         List<float[]> boundList = new List<float[]>();
         foreach(GameObject obj in gameObjList) {

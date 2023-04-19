@@ -9,12 +9,22 @@ public class GameManager : MonoBehaviour
     //there is always ONLY ONE GameManger object, which stores important values for other scripts. in cases like this it is called a "singleton" and GameManager.inst is a reference to that
     //object. this is great because having only ONE object means that all scripts will have the same value for something like gameManager.currentFloor, whereas if you made a new GameManager
     //for each script you would have to update every script manually every time you changed the value of currentFloor.
-
+    public Camera mainCam;
+    public Canvas uiCanvas;
+    public GameObject reticlePrefab;
     public Player player;
     public List<GameObject> roomPrefabs = new List<GameObject>();
+    public List<string> itemNames = new List<string>{};
+    public List<Sprite> itemSprites = new List<Sprite>();
+    public Dictionary<string, int> itemIndices = new Dictionary<string, int>{
+        {"blank", 0},
+        {"tomato", 1}
+    };
+
+    public System.Random r = new System.Random();
 
     int level = 1;
-    public System.Random r = new System.Random();
+    Reticle reticle = null;
 
     void Awake() {
         if (inst == null) {
@@ -29,6 +39,9 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         StartCoroutine(LateStart());
+        GameObject newReticle = GameObject.Instantiate(reticlePrefab, new Vector3(0, 0, 0), Quaternion.identity);
+        newReticle.transform.SetParent(uiCanvas.transform);
+        reticle = newReticle.GetComponent<Reticle>();
     }
 
     public IEnumerator LateStart() {
@@ -241,5 +254,25 @@ public class GameManager : MonoBehaviour
         }
         return (roomsListVal, boundsVal);
 
+    }
+
+    public void ChangeReticle(Sprite newReticle) {
+        if (newReticle == null) {
+            newReticle = itemSprites[itemIndices["blank"]];
+        }
+        reticle.ChangeReticle(newReticle);
+    }
+
+    public void ChangeReticle(string newReticle) {
+        if (newReticle == null || newReticle == "") {
+            newReticle = "blank";
+        }
+        reticle.ChangeReticle(itemSprites[itemIndices[newReticle]]);
+    }
+
+    public void EndDrag(bool term) {
+        if (term) {
+            player.inventory.EndDrag(true);
+        }
     }
 }

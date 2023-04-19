@@ -10,7 +10,8 @@ public class TomatoClub : Weapon
     int weaponDamage = 1;
     
     void Start() {
-        anim = gameObject.GetComponent<Animator>();
+        anim = GetComponent<Animator>();
+        sr = GetComponent<SpriteRenderer>();
     }
 
     void Update() {
@@ -20,6 +21,7 @@ public class TomatoClub : Weapon
 
     public override IEnumerator Attack() {
         if (attackCooldown == 0) {
+            attacking = true;
             attackCooldown = 0.5f;
             ChangeAnimationState("tempTomatoClubAttack");
             //colliders[0].enabled = true;
@@ -33,6 +35,7 @@ public class TomatoClub : Weapon
             yield return new WaitForSeconds(0.1f);
             colliders[2].enabled = false;
             ChangeAnimationState("tempTomatoClubIdle");
+            attacking = false;
         }
         yield return null;
     }

@@ -5,22 +5,26 @@ using TMPro;
 
 public class Player : MonoBehaviour
 {
+    public Inventory inventory;
     public TMP_Text healthText;
     public Weapon currWeapon;
     public GameObject inventoryMenu;
-
-
+    
+    GameManager gameManager;
     float moveSpeed = 1000f;
     float maxSpeed = 150f;
     int health = 5;
     float pauseDelay = 0.1f;
+    SpriteRenderer sr;
 
     Rigidbody2D rb;
     // Start is called before the first frame update
     void Start()
-    {
+    {   
+        gameManager = GameManager.inst;
         healthText.text = health.ToString();
         rb = GetComponent<Rigidbody2D>();
+        sr = GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
@@ -34,12 +38,22 @@ public class Player : MonoBehaviour
         }
         if (Input.GetKey("a")) {
             rb.velocity += Vector2.left * moveSpeed * Time.deltaTime;
+            if (!sr.flipX && !currWeapon.attacking && pauseDelay != 0) {
+                sr.flipX = true;
+                currWeapon.transform.position -= new Vector3(2 * Mathf.Abs(currWeapon.transform.localPosition.x), 0, 0);
+                currWeapon.sr.flipX = true;
+            }
         }
         if (Input.GetKey("s")) {
             rb.velocity += Vector2.down * moveSpeed * Time.deltaTime;
         }
         if (Input.GetKey("d")) {
             rb.velocity += Vector2.right * moveSpeed * Time.deltaTime;
+            if (sr.flipX && !currWeapon.attacking && pauseDelay != 0) {
+                sr.flipX = false;
+                currWeapon.transform.position += new Vector3(2 * Mathf.Abs(currWeapon.transform.localPosition.x), 0, 0);
+                currWeapon.sr.flipX = false;
+            }
         }
 
         rb.velocity = Vector2.ClampMagnitude(rb.velocity, maxSpeed);
@@ -54,6 +68,7 @@ public class Player : MonoBehaviour
                 Time.timeScale = 0;
             } else {
                 Time.timeScale = 1;
+                gameManager.EndDrag(false);
             }
             ToggleInventory();
         }
