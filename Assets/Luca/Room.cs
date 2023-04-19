@@ -16,6 +16,7 @@ public abstract class Room : MonoBehaviour
     //width, height
     public List<Transform> spawnPoints = new List<Transform>();
     public List<Transform> doorways = new List<Transform>();
+    public List<GameObject> doors = new List<GameObject>();
 
     string state = "inactive";
     //inactive, active, complete
@@ -45,4 +46,6 @@ public abstract class Room : MonoBehaviour
     }
 
     public abstract void Activate();
+
+    public abstract void Deactivate();
 }

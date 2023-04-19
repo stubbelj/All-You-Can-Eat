@@ -1,0 +1,14 @@
+---------Bugs-------------
+Attacking shifts inventory slots down a little bit
+	Expected: Attacking does not affect inventory slot positions
+	Actual: Attacking causes a slot offset the next time the inventory is opened
+Scrolling when there's only one item in the active hotbar causes it to be un-highlighted
+	Expected: Scrolling when there's only one item in the active hotbar causes it to stay highlighted
+	Actual: item becomes unhighlighted
+PeaPod enemy is spawning too many peas
+	Expected: 3 pea spawns per reload
+	Actual : 5 spawns (no sprite change for first two)
+
+---------Tasks------------
+cycle active weapon when scrolling
+enemy pathfinding

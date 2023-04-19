@@ -2,23 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Tomato : Enemy
+public class TomatoEnemy : Enemy
 {   
     //This class inherits from Enemy, which inherits from Monobehaviour. That means it will have properties of both. It inherits from Enemy so that other scripts can do things like
     //GetComponent<Enemy>() to get a reference to this script, without knowing what type of enemy script to specifically do, like GetComponent<Tomato>() in this case
     //MonoBehaviour is a class you need to inherit from in order to use a lot of unity game object stuff. for example, print(gameObject) will print the object this script is attached
     //to because MonoBehaviour.gameObject stores that reference for you
-
-    GameManager gameManager;
-    //this is the GameManager class I made to store globally useful or game-function related variables and functions, like a reference to the player or functions to initialize the level
-    Player player;
-    //this is the player - we will get the reference for it from the GameManager in Start()
-    Animator anim;
-    //this is an animator component on this object, which runs animation
-    Rigidbody2D rb;
-    //the rigidbody component, which is a component used for physics operations like collision, velocity or mass
-    string currAnimState;
-    //holds the current animation state
 
     int contactDamage = 1;
     float moveSpeed = 1000f;
@@ -83,24 +72,5 @@ public class Tomato : Enemy
             Destroy(gameObject);
             //destroys the gameObject this script is attached to, which will destroy the script as well
         }
-    }
-
-    bool AnimatorIsPlaying() {
-        //check if animation is playing
-        return anim.GetCurrentAnimatorStateInfo(0).length > anim.GetCurrentAnimatorStateInfo(0).normalizedTime;
-        //makes use of properties of the Animator component
-    }
-
-    bool AnimatorIsPlaying(string stateName) {
-        //check if a specific animation is playing
-        return AnimatorIsPlaying() && anim.GetCurrentAnimatorStateInfo(0).IsName(stateName);
-        //checks if an anim is even playing, then gets the name of the anim and checks with the argument
-    }
-
-    void ChangeAnimationState(string newState) {
-        //play an animation!
-        if (currAnimState == newState) return;
-        anim.Play(newState);
-        currAnimState = newState;
     }
 }

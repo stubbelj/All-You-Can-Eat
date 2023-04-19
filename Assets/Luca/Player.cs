@@ -9,6 +9,7 @@ public class Player : MonoBehaviour
     public TMP_Text healthText;
     public Weapon currWeapon;
     public GameObject inventoryMenu;
+    public GameObject activeHotbar;
     
     GameManager gameManager;
     float moveSpeed = 1000f;
@@ -38,7 +39,7 @@ public class Player : MonoBehaviour
         }
         if (Input.GetKey("a")) {
             rb.velocity += Vector2.left * moveSpeed * Time.deltaTime;
-            if (!sr.flipX && !currWeapon.attacking && pauseDelay != 0) {
+            if (!sr.flipX && !currWeapon.attacking && pauseDelay == 0) {
                 sr.flipX = true;
                 currWeapon.transform.position -= new Vector3(2 * Mathf.Abs(currWeapon.transform.localPosition.x), 0, 0);
                 currWeapon.sr.flipX = true;
@@ -49,7 +50,7 @@ public class Player : MonoBehaviour
         }
         if (Input.GetKey("d")) {
             rb.velocity += Vector2.right * moveSpeed * Time.deltaTime;
-            if (sr.flipX && !currWeapon.attacking && pauseDelay != 0) {
+            if (sr.flipX && !currWeapon.attacking && pauseDelay == 0) {
                 sr.flipX = false;
                 currWeapon.transform.position += new Vector3(2 * Mathf.Abs(currWeapon.transform.localPosition.x), 0, 0);
                 currWeapon.sr.flipX = false;
@@ -68,7 +69,7 @@ public class Player : MonoBehaviour
                 Time.timeScale = 0;
             } else {
                 Time.timeScale = 1;
-                gameManager.EndDrag(false);
+                gameManager.EndDrag(true);
             }
             ToggleInventory();
         }
@@ -97,6 +98,12 @@ public class Player : MonoBehaviour
     }
 
     void ToggleInventory() {
+        if (!inventoryMenu.activeSelf) {
+            activeHotbar.SetActive(false);
+        } else {
+            activeHotbar.SetActive(true);
+            activeHotbar.GetComponent<ActiveHotbar>().UpdateInventory();
+        }
         inventoryMenu.SetActive(!inventoryMenu.activeSelf);
     }
 }

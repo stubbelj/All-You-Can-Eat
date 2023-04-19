@@ -5,9 +5,6 @@ using UnityEngine;
 public class TomatoClub : Weapon
 {
     public Collider2D[] colliders = new Collider2D[3];
-    Animator anim;
-    string currAnimState;
-    int weaponDamage = 1;
     
     void Start() {
         anim = GetComponent<Animator>();
@@ -44,19 +41,5 @@ public class TomatoClub : Weapon
         if (col.gameObject.tag == "Enemy") {
             col.gameObject.GetComponent<Enemy>().TakeDamage(weaponDamage);
         }
-    }
-
-    bool AnimatorIsPlaying() {
-        return anim.GetCurrentAnimatorStateInfo(0).length > anim.GetCurrentAnimatorStateInfo(0).normalizedTime;
-    }
-
-    bool AnimatorIsPlaying(string stateName) {
-        return AnimatorIsPlaying() && anim.GetCurrentAnimatorStateInfo(0).IsName(stateName);
-    }
-
-    void ChangeAnimationState(string newState) {
-        if (currAnimState == newState) return;
-        anim.Play(newState);
-        currAnimState = newState;
     }
 }

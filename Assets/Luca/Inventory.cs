@@ -12,11 +12,11 @@ public class Inventory : MonoBehaviour
     
     Camera cam;
     GameManager gameManager;
-    int inventoryWidth = 4;
-    int inventoryHeight = 3;
+    public int inventoryWidth = 4;
+    public int inventoryHeight = 3;
     Slot activeDrag;
     bool dragging = false;
-    List<List<Slot>> slots = new List<List<Slot>>();
+    public List<List<Slot>> slots = new List<List<Slot>>();
     // Start is called before the first frame update
     void Start()
     {
