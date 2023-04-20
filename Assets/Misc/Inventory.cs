@@ -55,6 +55,8 @@ public class Inventory : MonoBehaviour
         }
         
         AddItem("tomato");
+        gameManager.player.activeHotbar.GetComponent<ActiveHotbar>().UpdateInventory();
+        gameObject.SetActive(false);
     }
 
     // Update is called once per frame

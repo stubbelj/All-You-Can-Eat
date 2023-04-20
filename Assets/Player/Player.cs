@@ -18,7 +18,7 @@ public class Player : MonoBehaviour
     float pauseDelay = 0.1f;
     SpriteRenderer sr;
 
-    Rigidbody2D rb;
+    public Rigidbody2D rb;
     // Start is called before the first frame update
     void Start()
     {   
