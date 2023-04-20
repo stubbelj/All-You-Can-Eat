@@ -28,7 +28,7 @@ public class TomatoEnemy : Enemy
         player = gameManager.player;
         //for example, here the gameManager has a reference to the player!
         anim = gameObject.GetComponent<Animator>();
-        //syntax to get the Animator component attached to this game object
+        //syntax to get the Animator component attached to this game object. note that anim is inherited from Enemy.cs, but is not assigned a value by it.
         rb = gameObject.GetComponent<Rigidbody2D>();
     }
 
@@ -51,7 +51,7 @@ public class TomatoEnemy : Enemy
             //dirVec is normalized so that direction is preserved, but movement speed does not change based on distance to the player
             rb.velocity = Vector2.ClampMagnitude(rb.velocity, maxSpeed);
             ChangeAnimationState("tempTomatoWalk");
-            //play the walking animation if nothing else is playing
+            //play the walking animation if nothing else is playing, inherited from Enemy.cs
         }
     }
 
