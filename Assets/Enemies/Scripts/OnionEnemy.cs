@@ -12,7 +12,7 @@ public class OnionEnemy : Enemy
     int contactDamage = 1;
     float moveSpeed = 1000f;
     //having a variable like moveSpeed is useful for tweaking enemy behaviour!
-    float maxSpeed = 100f;
+    float maxSpeed = 50f;
     int health = 3;
     //buff lil guy
     public Sprite halfOnion, weakOnion;
@@ -71,11 +71,11 @@ public class OnionEnemy : Enemy
         //check health of this enemy
         if (health == 2) {
             GetComponent<SpriteRenderer>().sprite = halfOnion;
-            moveSpeed = moveSpeed * 1.5f;
+            maxSpeed = maxSpeed * 1.5f;
         } 
         else if (health == 1){
             GetComponent<SpriteRenderer>().sprite = weakOnion;
-            moveSpeed = moveSpeed * 1.5f;
+            maxSpeed = maxSpeed * 1.5f;
         }
     }
 
