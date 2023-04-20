@@ -10,6 +10,7 @@ public class Slot : MonoBehaviour
     public string item = "blank";
     public GameObject itemSpriteContainer;
     GameManager gameManager;
+    bool isWeapon;
 
     void Awake() {
         gameManager = GameManager.inst;

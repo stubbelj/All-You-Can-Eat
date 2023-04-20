@@ -63,13 +63,13 @@ public class ActiveHotbar : MonoBehaviour
                 break;
             }
         }
-        Color tempColor = slots[curr].itemSpriteContainer.GetComponent<Image>().color;
-        tempColor.a = 1f;
-        slots[curr].itemSpriteContainer.GetComponent<Image>().color = tempColor;
-
-        tempColor = slots[prev].itemSpriteContainer.GetComponent<Image>().color;
+        Color tempColor = slots[prev].itemSpriteContainer.GetComponent<Image>().color;
         tempColor.a = 0.5f;
         slots[prev].itemSpriteContainer.GetComponent<Image>().color = tempColor;
+
+        tempColor = slots[curr].itemSpriteContainer.GetComponent<Image>().color;
+        tempColor.a = 1f;
+        slots[curr].itemSpriteContainer.GetComponent<Image>().color = tempColor;
     }
 
     public void UpdateInventory() {

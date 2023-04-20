@@ -46,7 +46,6 @@ public class PeaPodEnemy : Enemy
     }
 
     IEnumerator RegenPea(int index) {
-        print("regenPea");
         regenPea = true;
         yield return new WaitForSeconds(3f);
         peas[0].GetComponent<SpriteRenderer>().sprite = peaSprites[0];
