@@ -59,7 +59,7 @@ public class GameManager : MonoBehaviour
 
     void InitLevel() {
         //initialize the floor layout for the level
-        float compositeOverlapMargin = 140f;
+        float compositeOverlapMargin = 1000f;
         //minimum distance between composites
         compositeOverlapMargin *= 1;
 
@@ -170,7 +170,7 @@ public class GameManager : MonoBehaviour
     }
 
     (List<GameObject>, float[]) GenerateComposite(Node node) {
-        float roomOverlapMargin = 140f;
+        float roomOverlapMargin = 500f;
         //minimum distance between rooms
         roomOverlapMargin *= 1;
         //generates a room composite, a series of 4 connected rooms
