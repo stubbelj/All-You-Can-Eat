@@ -10,7 +10,10 @@ public class Slot : MonoBehaviour
     public string item = "blank";
     public GameObject itemSpriteContainer;
     GameManager gameManager;
-    bool isWeapon;
+    public string type = "none";
+    List<string> weaponList = new List<string>{
+        "tomatoClub", "slingPeas"
+    };
 
     void Awake() {
         gameManager = GameManager.inst;
@@ -19,6 +22,8 @@ public class Slot : MonoBehaviour
     public void ChangeItem(string newItemName) {
         if (newItemName == "") {
             newItemName = "blank";
+        } else if (weaponList.Contains(newItemName)) {
+            type = "weapon";
         }
         item = newItemName;
         itemSpriteContainer.GetComponent<Image>().sprite = gameManager.itemSprites[gameManager.itemIndices[newItemName]];

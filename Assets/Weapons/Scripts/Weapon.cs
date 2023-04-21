@@ -12,6 +12,7 @@ public abstract class Weapon : MonoBehaviour
     public Animator anim;
     public string currAnimState;
     public int weaponDamage = 1;
+    public GameManager gameManager;
 
     public bool AnimatorIsPlaying() {
         return anim.GetCurrentAnimatorStateInfo(0).length > anim.GetCurrentAnimatorStateInfo(0).normalizedTime;

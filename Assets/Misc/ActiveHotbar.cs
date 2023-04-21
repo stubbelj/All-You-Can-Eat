@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class ActiveHotbar : MonoBehaviour
 {
     public Inventory inventory;
+    public Player player;
     public List<Slot> slots = new List<Slot>();
     int curr = 0;
     int prev;
@@ -35,6 +36,8 @@ public class ActiveHotbar : MonoBehaviour
         if (Input.mouseScrollDelta.y != 0) {
             ScrollActiveHotbar(Input.mouseScrollDelta.y);
         }
+
+        //print(slots[0].GetType());
     }
 
     void ScrollActiveHotbar(float dir) {
@@ -70,6 +73,10 @@ public class ActiveHotbar : MonoBehaviour
         tempColor = slots[curr].itemSpriteContainer.GetComponent<Image>().color;
         tempColor.a = 1f;
         slots[curr].itemSpriteContainer.GetComponent<Image>().color = tempColor;
+
+        if(slots[curr].type == "weapon") {
+            player.ChangeWeapon(slots[curr].item);
+        }
     }
 
     public void UpdateInventory() {
@@ -77,6 +84,7 @@ public class ActiveHotbar : MonoBehaviour
             //iterate through hotbar slots, update activeHotbar
             Slot currSlot = inventory.slots[i][inventory.inventoryHeight - 1];
             slots[i].item = currSlot.item;
+            slots[i].type = currSlot.type;
             slots[i].itemSpriteContainer.GetComponent<Image>().sprite = currSlot.itemSpriteContainer.GetComponent<Image>().sprite;
         }
     }

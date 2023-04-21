@@ -2,7 +2,6 @@
 
 
 ---------Luca Tasks------------
-cycle active weapon when scrolling
 tileset?
 hallwayssss
 

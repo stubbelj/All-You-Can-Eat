@@ -18,7 +18,9 @@ public class GameManager : MonoBehaviour
     public List<Sprite> itemSprites = new List<Sprite>();
     public Dictionary<string, int> itemIndices = new Dictionary<string, int>{
         {"blank", 0},
-        {"tomato", 1}
+        {"tomato", 1},
+        {"tomatoClub", 2},
+        {"slingPeas", 3}
     };
 
     public System.Random r = new System.Random();

@@ -54,7 +54,8 @@ public class Inventory : MonoBehaviour
             }
         }
         
-        AddItem("tomato");
+        AddItem("tomatoClub");
+        AddItem("slingPeas");
         gameManager.player.activeHotbar.GetComponent<ActiveHotbar>().UpdateInventory();
         gameObject.SetActive(false);
     }
