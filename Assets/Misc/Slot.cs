@@ -12,7 +12,7 @@ public class Slot : MonoBehaviour
     GameManager gameManager;
     public string type = "none";
     List<string> weaponList = new List<string>{
-        "tomatoClub", "slingPeas"
+        "tomatoClub", "slingPeas", "cleaver"
     };
 
     void Awake() {

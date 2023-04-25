@@ -15,6 +15,7 @@ public class TomatoEnemy : Enemy
     float maxSpeed = 100f;
     int health = 1;
     //squishy lil guy
+    public GameObject tomatoWorldItemPrefab;
 
     // Start is called before the first frame update
     void Start()
@@ -69,6 +70,7 @@ public class TomatoEnemy : Enemy
         //reduce the health of this enemy
         health -= delta;
         if (health <= 0) {
+            GameObject.Instantiate(tomatoWorldItemPrefab, transform.position, Quaternion.identity);
             Destroy(gameObject);
             //destroys the gameObject this script is attached to, which will destroy the script as well
         }

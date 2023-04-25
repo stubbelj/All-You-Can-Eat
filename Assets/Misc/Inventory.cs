@@ -18,7 +18,10 @@ public class Inventory : MonoBehaviour
     bool dragging = false;
     public List<List<Slot>> slots = new List<List<Slot>>();
     // Start is called before the first frame update
-    void Start()
+    Dictionary<(string, string), string> craftingDict = new Dictionary<(string, string), string>{
+        {("tomato", "tomato"), "tomatoClub"}
+    };
+    void Awake()
     {
         gameManager = GameManager.inst;
         cam = Camera.main;
@@ -33,7 +36,7 @@ public class Inventory : MonoBehaviour
         for (int i = 0; i < inventoryWidth; i++) {
             //generate main inventory slots
             for (int j = 0; j < inventoryHeight - 1; j++) {
-                Vector2 spawnLocation = new Vector3((bg.GetComponent<RectTransform>().rect.width / (2 * inventoryWidth + 5f)) * (i - 1.5f), (bg.GetComponent<RectTransform>().rect.height / (inventoryHeight + 4)) * (2.5f + 0.75f * (j - 1)), 0);
+                Vector2 spawnLocation = new Vector3((bg.GetComponent<RectTransform>().rect.width / (2 * inventoryWidth + 5f)) * (i - 0.5f), (bg.GetComponent<RectTransform>().rect.height / (inventoryHeight + 4)) * (6.75f + 0.75f * (j - 1)), 0);
                 GameObject newSlot = GameObject.Instantiate(slotPrefab, spawnLocation, Quaternion.identity);
                 newSlot.transform.SetParent(mainInventory.transform);
                 newSlot.GetComponent<Slot>().coords = new int[]{i, j};
@@ -45,7 +48,7 @@ public class Inventory : MonoBehaviour
         for (int i = 0; i < inventoryWidth; i++) {
             //generate hotbar slots
             for (int j = 0; j < 1; j++) {
-                Vector2 spawnLocation = new Vector3((bg.GetComponent<RectTransform>().rect.width / (2 * inventoryWidth + 5f)) * (i - 1.5f), (bg.GetComponent<RectTransform>().rect.height / (inventoryHeight + 4)) * (2.5f + 0.75f * (j - 2.05f)), 0);
+                Vector2 spawnLocation = new Vector3((bg.GetComponent<RectTransform>().rect.width / (2 * inventoryWidth + 5f)) * (i - 0.5f), (bg.GetComponent<RectTransform>().rect.height / (inventoryHeight + 4)) * (6.75f + 0.75f * (j - 2.05f)), 0);
                 GameObject newSlot = GameObject.Instantiate(slotPrefab, spawnLocation, Quaternion.identity);
                 newSlot.transform.SetParent(hotbar.transform);
                 newSlot.GetComponent<Slot>().coords = new int[]{i, j};
@@ -54,8 +57,7 @@ public class Inventory : MonoBehaviour
             }
         }
         
-        AddItem("tomatoClub");
-        AddItem("slingPeas");
+        AddItem("cleaver");
         gameManager.player.activeHotbar.GetComponent<ActiveHotbar>().UpdateInventory();
         gameObject.SetActive(false);
     }
@@ -71,11 +73,21 @@ public class Inventory : MonoBehaviour
 
     }
 
-    void AddItem(string itemName) {
+    public void AddItem(string itemName) {
         for (int i = 0; i < inventoryWidth; i++) {
             if (slots[i][inventoryHeight - 1].item == "blank"){
                 slots[i][inventoryHeight - 1].ChangeItem(itemName);
+                gameManager.player.activeHotbar.GetComponent<ActiveHotbar>().UpdateInventory();
                 return;
+            }
+        }
+        for (int j = 0; j < inventoryHeight - 1; j++) {
+            for (int i = 0; i < inventoryWidth; i++) {
+                if (slots[i][j].item == "blank"){
+                    slots[i][j].ChangeItem(itemName);
+                    gameManager.player.activeHotbar.GetComponent<ActiveHotbar>().UpdateInventory();
+                    return;
+                }
             }
         }
     }
@@ -90,15 +102,20 @@ public class Inventory : MonoBehaviour
         }
     }
 
-    public void EndDrag(bool term) {
+    public void EndDrag(bool dragOverride) {
         dragging = false;
-        if (!term) {
+        if (!dragOverride) {
             Vector2 hoverCoords = new Vector2(cam.ScreenToWorldPoint(Input.mousePosition).x, cam.ScreenToWorldPoint(Input.mousePosition).y);
             Slot hoverSlot = SlotFromCoords(hoverCoords);
             if (hoverSlot != null) {
-                string tempHoverSlotItem = hoverSlot.item;
-                hoverSlot.ChangeItem(activeDrag.item);
-                activeDrag.ChangeItem(tempHoverSlotItem);
+                if(craftingDict.ContainsKey((hoverSlot.item, activeDrag.item))){
+                    hoverSlot.ChangeItem(craftingDict[(hoverSlot.item, activeDrag.item)]);
+                    activeDrag.ChangeItem("blank");
+                } else {
+                    string tempHoverSlotItem = hoverSlot.item;
+                    hoverSlot.ChangeItem(activeDrag.item);
+                    activeDrag.ChangeItem(tempHoverSlotItem);
+                }
             }
         }
         activeDrag = null;

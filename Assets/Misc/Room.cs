@@ -23,9 +23,17 @@ public abstract class Room : MonoBehaviour
 
     void Awake()
     {
+        bounds = new float[]{transform.position.x - width / 2, transform.position.x + width / 2, transform.position.y - width / 2, transform.position.y +  width / 2};
+    }
+
+    void Start() {
+        StartCoroutine(LateStart());
+    }
+
+    IEnumerator LateStart() {
+        yield return new WaitForSeconds(0.1f);
         gameManager = GameManager.inst;
         r = gameManager.r;
-        bounds = new float[]{transform.position.x - width / 2, transform.position.x + width / 2, transform.position.y - width / 2, transform.position.y +  width / 2};
     }
 
     void Update()

@@ -17,10 +17,6 @@ public class GameManager : MonoBehaviour
     public List<string> itemNames = new List<string>{};
     public List<Sprite> itemSprites = new List<Sprite>();
     public Dictionary<string, int> itemIndices = new Dictionary<string, int>{
-        {"blank", 0},
-        {"tomato", 1},
-        {"tomatoClub", 2},
-        {"slingPeas", 3}
     };
 
     public System.Random r = new System.Random();
@@ -33,6 +29,12 @@ public class GameManager : MonoBehaviour
             inst = this;
         } else {
             Destroy(gameObject);
+        }
+
+        int i = 0;
+        foreach(string itemName in itemNames) {
+            itemIndices.Add(itemName, i);
+            i++;
         }
 
     }
@@ -48,7 +50,7 @@ public class GameManager : MonoBehaviour
 
     public IEnumerator LateStart() {
         yield return new WaitForSeconds(0.5f);
-        InitLevel();
+        //InitLevel();
     }
 
     // Update is called once per frame

@@ -79,8 +79,6 @@ public class Player : MonoBehaviour
 
         pauseDelay -= Time.unscaledDeltaTime;
         pauseDelay = Mathf.Clamp(pauseDelay, 0, 0.1f);
-
-
     }
 
     void OnCollisionEnter2D (Collision2D col) {
@@ -103,18 +101,17 @@ public class Player : MonoBehaviour
 
     void ToggleInventory() {
         if (!inventoryMenu.activeSelf) {
+            inventoryMenu.SetActive(true);
             activeHotbar.SetActive(false);
         } else {
+            inventoryMenu.SetActive(false);
             activeHotbar.SetActive(true);
             activeHotbar.GetComponent<ActiveHotbar>().UpdateInventory();
         }
-        inventoryMenu.SetActive(!inventoryMenu.activeSelf);
     }
 
     public void ChangeWeapon(string weaponName) {
         currWeapon.gameObject.SetActive(false);
-        print(weapons);
-        print(weapons.transform.Find(weaponName));
         currWeapon = weapons.transform.Find(weaponName).gameObject.GetComponent<Weapon>();
         currWeapon.gameObject.SetActive(true);
     }
