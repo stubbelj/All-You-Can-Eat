@@ -1,9 +1,9 @@
 ---------Bugs-------------
+if you scroll to a different item in the hotbar while switching left/right, the weapon position gets moved too far
 
-
+craftingDict in Inventory.cs isn't working with string[] keys? so its (string, string) keys for now
 ---------Luca Tasks------------
-tileset?
-hallwayssss
+
 
 ---------Johan Tasks------------
 O n i o n

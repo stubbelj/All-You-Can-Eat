@@ -33,16 +33,40 @@ public class Utils
 
     public static bool OverlapTransforms(GameObject gameObj, List<GameObject> gameObjList, float errorMargin = 0) {
         //checks if the bounds of two gameObjects overlap
+
         float[] bound = BoundsFromRoom(gameObj.GetComponent<Room>());
         List<float[]> boundList = new List<float[]>();
         foreach(GameObject obj in gameObjList) {
-            boundList.Add(BoundsFromRoom(obj.GetComponent<Room>()));
+            if (obj != gameObj) {
+                //dont check if an obj intersects with itself
+                boundList.Add(BoundsFromRoom(obj.GetComponent<Room>()));
+            }
         }
         foreach (float[] testBound in boundList) {
             if (bound[1] < testBound[0] - errorMargin) { continue; }
             if (bound[0] > testBound[1] + errorMargin) { continue; }
             if (bound[3] < testBound[2] - errorMargin) { continue; }
             if (bound[2] > testBound[3] + errorMargin) { continue; }
+            return true;
+        }
+        return false;
+    }
+
+    public static bool OverlapTransformsX(GameObject a, GameObject b, float errorMargin = 0) {
+        //checks if the bounds of two gameObjects overlap
+        float[] boundA = BoundsFromRoom(a.GetComponent<Room>());
+        float[] boundB = BoundsFromRoom(b.GetComponent<Room>());
+        if (boundA[0] > boundB[0] - errorMargin && boundA[0] < boundB[1] + errorMargin) {
+            return true;
+        }
+        return false;
+    }
+
+    public static bool OverlapTransformsY(GameObject a, GameObject b, float errorMargin = 0) {
+        //checks if the bounds of two gameObjects overlap
+        float[] boundA = BoundsFromRoom(a.GetComponent<Room>());
+        float[] boundB = BoundsFromRoom(b.GetComponent<Room>());
+        if (boundA[2] > boundB[2] - errorMargin && boundA[2] < boundB[3] + errorMargin) {
             return true;
         }
         return false;

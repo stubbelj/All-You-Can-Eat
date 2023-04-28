@@ -14,14 +14,12 @@ public class GameManager : MonoBehaviour
     public GameObject reticlePrefab;
     public Player player;
     public List<GameObject> roomPrefabs = new List<GameObject>();
+    public List<GameObject> hallwayPrefabs = new List<GameObject>();
     public List<string> itemNames = new List<string>{};
     public List<Sprite> itemSprites = new List<Sprite>();
     public Dictionary<string, int> itemIndices = new Dictionary<string, int>{
-        {"blank", 0},
-        {"tomato", 1},
-        {"tomatoClub", 2},
-        {"slingPeas", 3}
     };
+    public GameObject[] debugPrefab;
 
     public System.Random r = new System.Random();
 
@@ -33,6 +31,12 @@ public class GameManager : MonoBehaviour
             inst = this;
         } else {
             Destroy(gameObject);
+        }
+
+        int i = 0;
+        foreach(string itemName in itemNames) {
+            itemIndices.Add(itemName, i);
+            i++;
         }
 
     }
@@ -63,7 +67,9 @@ public class GameManager : MonoBehaviour
         //minimum distance between composites
         compositeOverlapMargin *= 1;
 
-        int[][] compositeQuantity = new int[][] {new int[] {1, 1}, new int[] {3, 1}, new int[] {6, 2}};
+        float roomOverlapMargin = 600f;
+
+        int[][] compositeQuantity = new int[][] {new int[] {1, 0}, new int[] {3, 1}, new int[] {6, 2}};
         //number of composites to load for each level BESIDES the start room, of normal and special types
         Graph graph = new Graph();
         //in this graph, node.adj[0] is the "previous" node in the normal node branch and node.adj[1] is the next one
@@ -107,32 +113,32 @@ public class GameManager : MonoBehaviour
         //initialize curr as first normal node
         while(curr.data != "end") {
             //traverse through nodes, generating them as you go
-            (List<GameObject>, float[]) currComposite = GenerateComposite(curr);
-            //generate current normal composite
-            //int overlapDebugCounter1 = 100;
-            while (OverlapTransforms(currComposite.Item2, spawnedCompositeBounds, errorMargin : compositeOverlapMargin) /*&& overlapDebugCounter1 > 0*/) {
-                //check if newly spawned composite overlaps with any previous composites. if so, move it
-                /*if (true) {
-                    print("overlapDebugCounter1: " + overlapDebugCounter1);
-                    print(currComposite.Item2);
-                    foreach(float[] boundsItem in spawnedCompositeBounds) {
-                        print(boundsItem);
+            (List<GameObject>, float[]) currComposite = GenerateComposite(curr, roomOverlapMargin);
+                //generate current normal composite
+                //int overlapDebugCounter1 = 100;
+                while (OverlapTransforms(currComposite.Item2, spawnedCompositeBounds, errorMargin : compositeOverlapMargin) /*&& overlapDebugCounter1 > 0*/) {
+                    //check if newly spawned composite overlaps with any previous composites. if so, move it
+                    /*if (true) {
+                        print("overlapDebugCounter1: " + overlapDebugCounter1);
+                        print(currComposite.Item2);
+                        foreach(float[] boundsItem in spawnedCompositeBounds) {
+                            print(boundsItem);
+                        }
+                        print(OverlapTransforms(currComposite.Item2, spawnedCompositeBounds));
+                    }*/
+                    float roomSizeShiftMod = 140f;
+                    int j = r.Next(0, units.Length);
+                    Vector3 roomShift = units[j] * roomSizeShiftMod;
+                    foreach (Transform obj in currComposite.Item1[0].transform.parent) {
+                        //move each room in composite
+                        obj.position += roomShift;
                     }
-                    print(OverlapTransforms(currComposite.Item2, spawnedCompositeBounds));
-                }*/
-                float roomSizeShiftMod = 140f;
-                int j = r.Next(0, units.Length);
-                Vector3 roomShift = units[j] * roomSizeShiftMod;
-                foreach (GameObject room in currComposite.Item1) {
-                    //move each room in composite
-                    room.transform.position += roomShift;
+                    currComposite.Item2[0] += roomShift.x;
+                    currComposite.Item2[1] += roomShift.x;
+                    currComposite.Item2[2] += roomShift.y;
+                    currComposite.Item2[3] += roomShift.y;
+                    //overlapDebugCounter1--;
                 }
-                currComposite.Item2[0] += roomShift.x;
-                currComposite.Item2[1] += roomShift.x;
-                currComposite.Item2[2] += roomShift.y;
-                currComposite.Item2[3] += roomShift.y;
-                //overlapDebugCounter1--;
-            }
             //print(overlapDebugCounter1);
 
             spawnedCompositeBounds.Add(currComposite.Item2);
@@ -142,16 +148,16 @@ public class GameManager : MonoBehaviour
                 if (node.data != "normal") {
                     //don't generate the next normal composite yet
                     //int overlapDebugCounter2 = 100;
-                    (List<GameObject>, float[]) adjComposite = GenerateComposite(node);
+                    (List<GameObject>, float[]) adjComposite = GenerateComposite(node, roomOverlapMargin);
                     while (OverlapTransforms(adjComposite.Item2, spawnedCompositeBounds, errorMargin : compositeOverlapMargin) /*&& overlapDebugCounter2 > 0*/) {
                     
                         //check if newly spawned adj composite overlaps with any previous composites. if so, move it
                         float roomSizeShiftMod = 140f;
                         int j = r.Next(0, units.Length);
                         Vector3 roomShift = units[j] * roomSizeShiftMod;
-                        foreach (GameObject room in adjComposite.Item1) {
+                        foreach (Transform obj in adjComposite.Item1[0].transform.parent) {
                             //move each room in composite
-                            room.transform.position += roomShift;
+                            obj.position += roomShift;
                         }
                         adjComposite.Item2[0] += roomShift.x;
                         adjComposite.Item2[1] += roomShift.x;
@@ -169,18 +175,17 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    (List<GameObject>, float[]) GenerateComposite(Node node) {
-        float roomOverlapMargin = 500f;
-        //minimum distance between rooms
-        roomOverlapMargin *= 1;
+    (List<GameObject>, float[]) GenerateComposite(Node node, float OverlapMargin) {
+        float hallwayWidth = 64f;
+        float roomOverlapMargin = OverlapMargin;
         //generates a room composite, a series of 4 connected rooms
-        string[][] normalCompositeTypes = new string[][] {
+        string[][] normalRoomTypes = new string[][] {
             new string[] {"enemySmall"},
             new string[] {"enemySmall", "enemyLarge"},
             new string[] {"enemySmall", "enemyLarge"}
         };
         //types of composites that can load on each level, VERY VAGUE types
-        string[][] specialCompositeTypes = new string[][] {
+        string[][] specialRoomTypes = new string[][] {
             new string[] {"reward"},
             new string[] {"reward"},
             new string[] {"reward"}
@@ -189,9 +194,10 @@ public class GameManager : MonoBehaviour
         Dictionary<string, int[]> roomIndexes = new Dictionary<string, int[]>{
             {"root", new int[] {0} },
             {"end", new int[] {1} },
-            {"enemySmall", new int[] {2} },
-            {"enemyLarge", new int[] {3} },
-            {"reward", new int[] {4} }
+            {"three", new int[] {2} },
+            {"enemySmall", new int[] {3} },
+            {"enemyLarge", new int[] {4} },
+            {"reward", new int[] {5} }
         };
         List<string> roomSpawnList = new List<string>();
         switch(node.data) {
@@ -205,34 +211,180 @@ public class GameManager : MonoBehaviour
                 break;
             case "normal":
                 //4-5 normal rooms
-                for(int i = 0; i < 4; i++) {
-                    roomSpawnList.Add(normalCompositeTypes[level][r.Next(0, normalCompositeTypes[level].Length)]);
+                roomSpawnList.Add("three");
+                for(int i = 0; i < 3; i++) {
+                    roomSpawnList.Add(normalRoomTypes[level][r.Next(0, normalRoomTypes[level].Length)]);
                     //add a random room of a valid type for that level
                 }
                 break;
             case "special":
                 //4-5 normal rooms with a special room at the end
-                for(int i = 0; i < 4; i++) {
-                    roomSpawnList.Add(normalCompositeTypes[level][r.Next(0, normalCompositeTypes[level].Length)]);
+                roomSpawnList.Add("three");
+                for(int i = 0; i < 3; i++) {
+                    roomSpawnList.Add(normalRoomTypes[level][r.Next(0, normalRoomTypes[level].Length)]);
                 }
-                roomSpawnList.Add(specialCompositeTypes[level][r.Next(0, specialCompositeTypes[level].Length)]);
+                roomSpawnList.Add(specialRoomTypes[level][r.Next(0, specialRoomTypes[level].Length)]);
                 break;
         }
+
         Vector3[] units = new Vector3[] {Vector3.up, Vector3.down, Vector3.left, Vector3.right};
         List<GameObject> spawnedRooms = new List<GameObject>();
-        foreach(string roomType in roomSpawnList) {
-            //spawn each room!
-            GameObject newRoom = GameObject.Instantiate(roomPrefabs[roomIndexes[roomType][r.Next(0, roomIndexes[roomType].Length)]]);
-            newRoom.name = "Composite of nodal type: " + node.data;
-            while (OverlapTransforms(newRoom, spawnedRooms, errorMargin : roomOverlapMargin)) {
-            
-            //while overlapping with any of the rooms in the composite, keep shifting room
-                int i = r.Next(0, units.Length);
-                newRoom.transform.position += units[i] * (i <= 1 ? newRoom.GetComponent<Room>().height : newRoom.GetComponent<Room>().width);
+        List<string> spawnedRoomNames = new List<string>(){"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M"};
+        GameObject compositeParent = new GameObject("composite parent for nodal type: " + node.data);
+
+
+        int debugCounter = 10;
+        bool noOverlaps = false;
+        while(!noOverlaps && debugCounter > 0){
+            int ij = 0;
+            foreach(string roomType in roomSpawnList) {
+                //spawn each room!
+                GameObject newRoom = GameObject.Instantiate(roomPrefabs[roomIndexes[roomType][r.Next(0, roomIndexes[roomType].Length)]]);
+                newRoom.name = spawnedRoomNames[ij];
+                newRoom.transform.SetParent(compositeParent.transform);
+                newRoom.GetComponent<Room>().Init();
+                /*while (OverlapTransforms(newRoom, spawnedRooms, errorMargin : roomOverlapMargin)) {
+                //while overlapping with any of the rooms in the composite, keep shifting room
+                    int i = r.Next(0, units.Length);
+                    newRoom.transform.position += units[i] * (i <= 1 ? newRoom.GetComponent<Room>().height : newRoom.GetComponent<Room>().width);
+                }*/
+
+                spawnedRooms.Add(newRoom);
+                ij++;
             }
 
-            spawnedRooms.Add(newRoom);
+            for (int i = 0; i < spawnedRooms.Count - 1; i++) {
+                //line up doorways
+                /*for each room except the last room, line up the exit with the next entrance. if those points are on incompatible room sides, swap the entrance and exit
+                you can always just swap the entrance and exit because there is at most 1 incompatible side*/
+                string startDir = spawnedRooms[i].GetComponent<Room>().doorSide[1];
+                string endDir = spawnedRooms[i + 1].GetComponent<Room>().doorSide[0];
+                if (startDir == endDir) {
+                    GameObject debugger = GameObject.Instantiate(debugPrefab[2], spawnedRooms[i + 1].transform.position, Quaternion.identity);
+                    debugger.transform.SetParent(compositeParent.transform);
+                    //swap entrance and exit if incompatible
+                    GameObject temp = spawnedRooms[i + 1].GetComponent<Room>().doors[0];
+                    spawnedRooms[i + 1].GetComponent<Room>().doors[0] = spawnedRooms[i + 1].GetComponent<Room>().doors[1];
+                    spawnedRooms[i + 1].GetComponent<Room>().doors[1] = temp;
+                }
+                spawnedRooms[i + 1].transform.position = spawnedRooms[i].transform.position;
+                if (startDir == "left" || startDir == "right") {
+                    while(OverlapTransformsX(spawnedRooms[i], spawnedRooms[i + 1], errorMargin : roomOverlapMargin)) {
+                        spawnedRooms[i + 1].transform.position += new Vector3(64 * (startDir == "left" ? -1 : 1), 0, 0);
+                    }
+                    if (endDir == "up" || endDir == "down") {
+                        while(OverlapTransformsY(spawnedRooms[i], spawnedRooms[i + 1], errorMargin : roomOverlapMargin)) {
+                            spawnedRooms[i + 1].transform.position += new Vector3(0, 64 * (endDir == "up" ? -1 : 1), 0);
+                        }
+                    }
+                } else if (startDir == "up" || startDir == "down") {
+                    while(OverlapTransformsY(spawnedRooms[i], spawnedRooms[i + 1], errorMargin : roomOverlapMargin)) {
+                        spawnedRooms[i + 1].transform.position += new Vector3(0, 64 * (startDir == "up" ? 1 : -1), 0);
+                    }
+                    if (endDir == "left" || endDir == "right") {
+                        while(OverlapTransformsX(spawnedRooms[i], spawnedRooms[i + 1], errorMargin : roomOverlapMargin)) {
+                            spawnedRooms[i + 1].transform.position += new Vector3(64 * (endDir == "left" ? 1 : -1), 0, 0);
+                        }
+                    }
+                }
+                //smooth out small gaps!
+                Vector3 startPos = spawnedRooms[i].GetComponent<Room>().doors[1].transform.position;
+                Vector3 endPos = spawnedRooms[i + 1].GetComponent<Room>().doors[0].transform.position;
+                if ((endPos.x - startPos.x) % hallwayWidth != 0) {
+                    spawnedRooms[i + 1].transform.position += new Vector3((endPos.x > startPos.x ? -1 : 1) * Mathf.Abs((endPos.x - startPos.x) % hallwayWidth), 0, 0);
+                }
+                if ((endPos.y - startPos.y) % hallwayWidth != 0) {
+                    spawnedRooms[i + 1].transform.position += new Vector3(0, (endPos.y > startPos.y ? -1 : 1) * Mathf.Abs((endPos.y - startPos.y) % hallwayWidth), 0);
+                }
+            }
+
+
+            //connect rooms in composite by hallways
+            //draw hallways directly into rooms
+        
+            for (int i = 0; i < spawnedRooms.Count - 1; i++) {
+                string dir = spawnedRooms[i].GetComponent<Room>().doorSide[1];
+                string endDir = spawnedRooms[i + 1].GetComponent<Room>().doorSide[0];
+                Vector3 startPos = spawnedRooms[i].GetComponent<Room>().SideCoordsFromSide(spawnedRooms[i].GetComponent<Room>().doorSide[1]);
+                Vector3 endPos = spawnedRooms[i + 1].GetComponent<Room>().SideCoordsFromSide(spawnedRooms[i + 1].GetComponent<Room>().doorSide[0]);
+                Vector3 curr = startPos;
+                if (dir == "right") {
+                        curr += new Vector3(hallwayWidth, 0, 0);
+                } else if (dir == "left") {
+                        curr += new Vector3(-hallwayWidth, 0, 0);
+                } else if (dir == "up") {
+                        curr += new Vector3(0, hallwayWidth, 0);
+                } else if (dir == "down") {
+                        curr += new Vector3(0, -hallwayWidth, 0);
+                }
+                GameObject hallwayParent = new GameObject("hallwayParent");
+                hallwayParent.transform.SetParent(compositeParent.transform);
+                GameObject debug1 = GameObject.Instantiate(debugPrefab[0], startPos, Quaternion.identity);
+                debug1.transform.SetParent(hallwayParent.transform);
+                GameObject debug2 = GameObject.Instantiate(debugPrefab[1], endPos, Quaternion.identity);
+                debug2.transform.SetParent(hallwayParent.transform);
+
+                int debugCounter3 = 100;
+                while (Mathf.Abs((curr - endPos).magnitude) > hallwayWidth && debugCounter3 > 0) {
+                    //while not at end point
+                    Vector3 transformation = new Vector3(1f, 1f, 1f);
+                    if (dir == "right") {
+                        transformation = new Vector3(hallwayWidth, 0, 0);
+                    } else if (dir == "left") {
+                        transformation = new Vector3(-hallwayWidth, 0, 0);
+                    } else if (dir == "up") {
+                        transformation = new Vector3(0, hallwayWidth, 0);
+                    } else if (dir == "down") {
+                        transformation = new Vector3(0, -hallwayWidth, 0);
+                    }
+                    GameObject newHallway = GameObject.Instantiate(hallwayPrefabs[dir == "right" || dir == "left" ? 0 : 1], curr + transformation, Quaternion.identity);
+                    newHallway.name = spawnedRoomNames[i] + "hallway";
+                    newHallway.transform.SetParent(hallwayParent.transform);
+                    curr = newHallway.transform.position;
+                    
+                    if (dir == "left" || dir == "right") {
+                        if (Mathf.Abs(curr.x - endPos.x) < hallwayWidth) {
+                            //if done with this axis of movement
+                            if (curr.y > endPos.y) {
+                                dir = "down";
+                            } else {
+                                dir = "up";
+                            }
+                        }
+                    } else {
+                        if (Mathf.Abs(curr.y - endPos.y) < hallwayWidth) {
+                            //if done with this axis of movement
+                            if (curr.x > endPos.x) {
+                                dir = "left";
+                            } else {
+                                dir = "right";
+                            }
+                        }
+                    }
+                    
+                debugCounter3--;
+                }
+                print(debugCounter3);
+            }
+
+            foreach(GameObject room in spawnedRooms) {
+                //if any rooms within the composite overlap with each other, regenerate the entire composite
+                if (OverlapTransforms(room, spawnedRooms, errorMargin: roomOverlapMargin / 4)) {
+                    noOverlaps = false;                        
+                    break;
+                } else {
+                    noOverlaps = true;
+                }
+            }
+            if (!noOverlaps) {
+                Destroy(compositeParent);
+                compositeParent = new GameObject("composite parent for nodal type: " + node.data);
+                spawnedRooms = new List<GameObject>();
+            }
+            debugCounter--;
         }
+
+        print(debugCounter);
 
         List<GameObject> roomsListVal = new List<GameObject>();
         foreach(GameObject obj in spawnedRooms) {
@@ -255,7 +407,6 @@ public class GameManager : MonoBehaviour
             }
         }
         return (roomsListVal, boundsVal);
-
     }
 
     public void ChangeReticle(Sprite newReticle) {
