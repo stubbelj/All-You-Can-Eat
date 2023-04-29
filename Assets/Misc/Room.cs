@@ -69,37 +69,21 @@ public abstract class Room : MonoBehaviour
         doors[shuffleIndices[0]] = doors[shuffleIndices[1]];
         doors[shuffleIndices[1]] = tempDoor;
 
-        /*for (int i = 0; i < doors.Count; i++) {
-            //find which side the door is on
-            string bestSide = "left";
-            float best = Mathf.Abs(tilemapBounds.center.x - tilemapBounds.extents.x - doors[i].transform.position.x);
-            if (Mathf.Abs(tilemapBounds.center.x + tilemapBounds.extents.x - doors[i].transform.position.x) < best) {
-                best = Mathf.Abs(tilemapBounds.center.x + tilemapBounds.extents.x - doors[i].transform.position.x);
-                bestSide = "right";
-            }
-            if (Mathf.Abs(tilemapBounds.center.y - tilemapBounds.extents.y - doors[i].transform.position.y) < best) {
-                best = Mathf.Abs(tilemapBounds.center.y - tilemapBounds.extents.y - doors[i].transform.position.y);
-                bestSide = "down";
-            }
-            if (Mathf.Abs(tilemapBounds.center.y + tilemapBounds.extents.y - doors[i].transform.position.y) < best) {
-                best = Mathf.Abs(tilemapBounds.center.y + tilemapBounds.extents.y - doors[i].transform.position.y);
-                bestSide = "up";
-            }
-            doorSide.Add(bestSide);
-        }*/
-
         for (int i = 0; i < doors.Count; i++) {
             //find which side the door is on
             string bestSide = "left";
-            float bestMag = (new Vector3(-tilemapBounds.extents.x, 0, 0) - doors[i].transform.position).magnitude;
-            if ((new Vector3(tilemapBounds.extents.x, 0, 0) - doors[i].transform.position).magnitude < bestMag) {
+            float bestMag = (transform.position + new Vector3(-tilemapBounds.extents.x, 0, 0) - doors[i].transform.position).magnitude;
+            if ((transform.position + new Vector3(tilemapBounds.extents.x, 0, 0) - doors[i].transform.position).magnitude < bestMag) {
                 bestSide = "right";
+                bestMag = (transform.position + new Vector3(tilemapBounds.extents.x, 0, 0) - doors[i].transform.position).magnitude;
             }
-            if ((new Vector3(0, tilemapBounds.extents.y, 0) - doors[i].transform.position).magnitude < bestMag) {
-                bestSide = "top";
+            if ((transform.position + new Vector3(0, tilemapBounds.extents.y, 0) - doors[i].transform.position).magnitude < bestMag) {
+                bestSide = "up";
+                bestMag = (transform.position + new Vector3(0, tilemapBounds.extents.y, 0) - doors[i].transform.position).magnitude;
             }
-            if ((new Vector3(0, -tilemapBounds.extents.y, 0) - doors[i].transform.position).magnitude < bestMag) {
+            if ((transform.position + new Vector3(0, -tilemapBounds.extents.y, 0) - doors[i].transform.position).magnitude < bestMag) {
                 bestSide = "down";
+                bestMag = (transform.position + new Vector3(0, -tilemapBounds.extents.y, 0) - doors[i].transform.position).magnitude;
             }
             doorSide.Add(bestSide);
         }
@@ -113,10 +97,11 @@ public abstract class Room : MonoBehaviour
             return transform.position + new Vector3(0, -tilemapBounds.extents.y, 0);
         } else if (sideName == "left") {
             return transform.position + new Vector3(-tilemapBounds.extents.x, 0, 0);
-        } else {
+        } else if (sideName == "right") {
             //right
             return transform.position + new Vector3(tilemapBounds.extents.x, 0, 0);
         }
+        return Vector3.zero;
     }
 
     public abstract void Activate();

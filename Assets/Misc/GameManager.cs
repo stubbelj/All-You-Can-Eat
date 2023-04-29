@@ -254,6 +254,7 @@ public class GameManager : MonoBehaviour
             }
 
             for (int i = 0; i < spawnedRooms.Count - 1; i++) {
+                bool swapFlag = false;
                 //line up doorways
                 /*for each room except the last room, line up the exit with the next entrance. if those points are on incompatible room sides, swap the entrance and exit
                 you can always just swap the entrance and exit because there is at most 1 incompatible side*/
@@ -262,10 +263,10 @@ public class GameManager : MonoBehaviour
                 if (startDir == endDir) {
                     GameObject debugger = GameObject.Instantiate(debugPrefab[2], spawnedRooms[i + 1].transform.position, Quaternion.identity);
                     debugger.transform.SetParent(compositeParent.transform);
+                    debugger.name = spawnedRooms[i + 1].name + "tomato debugger";
                     //swap entrance and exit if incompatible
-                    GameObject temp = spawnedRooms[i + 1].GetComponent<Room>().doors[0];
-                    spawnedRooms[i + 1].GetComponent<Room>().doors[0] = spawnedRooms[i + 1].GetComponent<Room>().doors[1];
-                    spawnedRooms[i + 1].GetComponent<Room>().doors[1] = temp;
+                    endDir = spawnedRooms[i + 1].GetComponent<Room>().doorSide[1];
+                    swapFlag = true;
                 }
                 spawnedRooms[i + 1].transform.position = spawnedRooms[i].transform.position;
                 if (startDir == "left" || startDir == "right") {
@@ -308,6 +309,38 @@ public class GameManager : MonoBehaviour
                 Vector3 startPos = spawnedRooms[i].GetComponent<Room>().SideCoordsFromSide(spawnedRooms[i].GetComponent<Room>().doorSide[1]);
                 Vector3 endPos = spawnedRooms[i + 1].GetComponent<Room>().SideCoordsFromSide(spawnedRooms[i + 1].GetComponent<Room>().doorSide[0]);
                 Vector3 curr = startPos;
+                if (swapFlag) {
+                    //not done changing swap code - basically, the variables down here need to be swapped as well! you were only swapping the variables up there
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    endDir = spawnedRooms[i + 1].GetComponent<Room>().doorSide[1];
+                    Vector3 temp = spawnedRooms[i + 1].GetComponent<Room>().doors[0];
+                    Vector3 endPos = spawnedRooms[i + 1].GetComponent<Room>().SideCoordsFromSide(spawnedRooms[i + 1].GetComponent<Room>().doorSide[0]);
+                    Vector3 endPos = temp;
+                }
                 if (dir == "right") {
                         curr += new Vector3(hallwayWidth, 0, 0);
                 } else if (dir == "left") {
