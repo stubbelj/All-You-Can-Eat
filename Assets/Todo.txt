@@ -3,7 +3,7 @@ if you scroll to a different item in the hotbar while switching left/right, the 
 
 craftingDict in Inventory.cs isn't working with string[] keys? so its (string, string) keys for now
 ---------Luca Tasks------------
-
+perks!
 
 ---------Johan Tasks------------
 O n i o n
