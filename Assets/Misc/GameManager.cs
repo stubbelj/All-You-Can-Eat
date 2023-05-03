@@ -21,7 +21,7 @@ public class GameManager : MonoBehaviour
     };
     public GameObject[] debugPrefab;
 
-    public System.Random r = new System.Random();
+    public System.Random r = new System.Random(430);
 
     int level = 1;
     Reticle reticle = null;
@@ -253,8 +253,10 @@ public class GameManager : MonoBehaviour
                 ij++;
             }
 
+            bool[] swapFlags = new bool[spawnedRooms.Count - 1];
+
             for (int i = 0; i < spawnedRooms.Count - 1; i++) {
-                bool swapFlag = false;
+                swapFlags[i] = false;
                 //line up doorways
                 /*for each room except the last room, line up the exit with the next entrance. if those points are on incompatible room sides, swap the entrance and exit
                 you can always just swap the entrance and exit because there is at most 1 incompatible side*/
@@ -265,8 +267,14 @@ public class GameManager : MonoBehaviour
                     debugger.transform.SetParent(compositeParent.transform);
                     debugger.name = spawnedRooms[i + 1].name + "tomato debugger";
                     //swap entrance and exit if incompatible
-                    endDir = spawnedRooms[i + 1].GetComponent<Room>().doorSide[1];
-                    swapFlag = true;
+                    string temp = spawnedRooms[i + 1].GetComponent<Room>().doorSide[0];
+                    spawnedRooms[i + 1].GetComponent<Room>().doorSide[0] = spawnedRooms[i + 1].GetComponent<Room>().doorSide[1];
+                    spawnedRooms[i + 1].GetComponent<Room>().doorSide[1] = temp;
+                    GameObject tempDoor = spawnedRooms[i + 1].GetComponent<Room>().doors[0];
+                    spawnedRooms[i + 1].GetComponent<Room>().doors[0] = spawnedRooms[i + 1].GetComponent<Room>().doors[1];
+                    spawnedRooms[i + 1].GetComponent<Room>().doors[1] = tempDoor;
+                    endDir = spawnedRooms[i + 1].GetComponent<Room>().doorSide[0];
+                    swapFlags[i] = true;
                 }
                 spawnedRooms[i + 1].transform.position = spawnedRooms[i].transform.position;
                 if (startDir == "left" || startDir == "right") {
@@ -309,37 +317,9 @@ public class GameManager : MonoBehaviour
                 Vector3 startPos = spawnedRooms[i].GetComponent<Room>().SideCoordsFromSide(spawnedRooms[i].GetComponent<Room>().doorSide[1]);
                 Vector3 endPos = spawnedRooms[i + 1].GetComponent<Room>().SideCoordsFromSide(spawnedRooms[i + 1].GetComponent<Room>().doorSide[0]);
                 Vector3 curr = startPos;
-                if (swapFlag) {
-                    //not done changing swap code - basically, the variables down here need to be swapped as well! you were only swapping the variables up there
+                if (swapFlags[i]) {
+                    //in theory nothing needs to happen here bc the refs were swapped
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    endDir = spawnedRooms[i + 1].GetComponent<Room>().doorSide[1];
-                    Vector3 temp = spawnedRooms[i + 1].GetComponent<Room>().doors[0];
-                    Vector3 endPos = spawnedRooms[i + 1].GetComponent<Room>().SideCoordsFromSide(spawnedRooms[i + 1].GetComponent<Room>().doorSide[0]);
-                    Vector3 endPos = temp;
                 }
                 if (dir == "right") {
                         curr += new Vector3(hallwayWidth, 0, 0);
@@ -375,23 +355,70 @@ public class GameManager : MonoBehaviour
                     newHallway.transform.SetParent(hallwayParent.transform);
                     curr = newHallway.transform.position;
                     
+                    int prefabIndex = 0;
+                    bool flip = false;
                     if (dir == "left" || dir == "right") {
                         if (Mathf.Abs(curr.x - endPos.x) < hallwayWidth) {
                             //if done with this axis of movement
                             if (curr.y > endPos.y) {
+                                if (dir == "left") {
+                                    //left -> down
+                                    prefabIndex = 2;
+                                    flip = true;
+                                } else if (dir == "right") {
+                                    //right -> down
+                                    prefabIndex = 2;
+
+                                }
                                 dir = "down";
                             } else {
+                                if (dir == "left") {
+                                    //left -> up
+                                    prefabIndex = 3;
+                                    flip = true;
+                                } else if (dir == "right") {
+                                    //right -> up
+                                    prefabIndex = 3;
+                                }
                                 dir = "up";
                             }
+                            //Destroy(newHallway);
+                            newHallway = GameObject.Instantiate(hallwayPrefabs[prefabIndex], curr + transformation, Quaternion.identity);
+                            newHallway.name = spawnedRoomNames[i] + "hallway corner";
+                            newHallway.transform.SetParent(hallwayParent.transform);
+                            curr = newHallway.transform.position;
+                            newHallway.transform.localScale = new Vector3((flip ? 1 : -1) * newHallway.transform.localScale.x, newHallway.transform.localScale.y, newHallway.transform.localScale.z);
                         }
                     } else {
                         if (Mathf.Abs(curr.y - endPos.y) < hallwayWidth) {
                             //if done with this axis of movement
                             if (curr.x > endPos.x) {
+                                if (dir == "up") {
+                                    //up -> left
+                                    prefabIndex = 2;
+                                    flip = true;
+                                } else if (dir == "down") {
+                                    //down -> left
+                                    prefabIndex = 3;
+                                    flip = true;
+                                }
                                 dir = "left";
                             } else {
+                                if (dir == "up") {
+                                    //up -> right
+                                    prefabIndex = 2;
+                                } else if (dir == "down") {
+                                    //down -> right
+                                    prefabIndex = 3;
+                                }
                                 dir = "right";
                             }
+                            //Destroy(newHallway);
+                            newHallway = GameObject.Instantiate(hallwayPrefabs[prefabIndex], curr + transformation, Quaternion.identity);
+                            newHallway.name = spawnedRoomNames[i] + "hallway corner";
+                            newHallway.transform.SetParent(hallwayParent.transform);
+                            curr = newHallway.transform.position;
+                            newHallway.transform.localScale = new Vector3((flip ? 1 : -1) * newHallway.transform.localScale.x, newHallway.transform.localScale.y, newHallway.transform.localScale.z);
                         }
                     }
                     

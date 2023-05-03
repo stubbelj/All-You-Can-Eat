@@ -414,6 +414,54 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1715777345}
     m_Modifications:
+    - target: {fileID: 4786656564932742788, guid: be49f6c95f2a8fe4aa8985e0a164d0e7, type: 3}
+      propertyPath: m_SpriteTilingProperty.newSize.x
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4786656564932742788, guid: be49f6c95f2a8fe4aa8985e0a164d0e7, type: 3}
+      propertyPath: m_SpriteTilingProperty.newSize.y
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 4786656564932742788, guid: be49f6c95f2a8fe4aa8985e0a164d0e7, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.x
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4786656564932742788, guid: be49f6c95f2a8fe4aa8985e0a164d0e7, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 4786656564932742789, guid: be49f6c95f2a8fe4aa8985e0a164d0e7, type: 3}
+      propertyPath: m_SpriteTilingProperty.newSize.x
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4786656564932742789, guid: be49f6c95f2a8fe4aa8985e0a164d0e7, type: 3}
+      propertyPath: m_SpriteTilingProperty.newSize.y
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 4786656564932742789, guid: be49f6c95f2a8fe4aa8985e0a164d0e7, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.x
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4786656564932742789, guid: be49f6c95f2a8fe4aa8985e0a164d0e7, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 4786656564932742791, guid: be49f6c95f2a8fe4aa8985e0a164d0e7, type: 3}
+      propertyPath: m_SpriteTilingProperty.newSize.x
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4786656564932742791, guid: be49f6c95f2a8fe4aa8985e0a164d0e7, type: 3}
+      propertyPath: m_SpriteTilingProperty.newSize.y
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 4786656564932742791, guid: be49f6c95f2a8fe4aa8985e0a164d0e7, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.x
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4786656564932742791, guid: be49f6c95f2a8fe4aa8985e0a164d0e7, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 16
+      objectReference: {fileID: 0}
     - target: {fileID: 4786656564932742809, guid: be49f6c95f2a8fe4aa8985e0a164d0e7, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -632,6 +680,8 @@ MonoBehaviour:
   hallwayPrefabs:
   - {fileID: 6961977008037346554, guid: ff20480e93c2d41499508ce09c38f14f, type: 3}
   - {fileID: 9172299646544863231, guid: 50dc4eb8050311a469837cf9cf0c5585, type: 3}
+  - {fileID: 448346909648240446, guid: 26e8afd65fc4c7645a6dbb58bf11a3ee, type: 3}
+  - {fileID: 448346909648240446, guid: a74c98e3a87110840b26807039a696d9, type: 3}
   itemNames:
   - blank
   - tomato
