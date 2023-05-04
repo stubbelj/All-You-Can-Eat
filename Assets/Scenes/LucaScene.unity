@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 129165479}
   - component: {fileID: 129165481}
   - component: {fileID: 129165480}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: HealthText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -347,7 +347,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -454,6 +454,7 @@ MonoBehaviour:
   coords: 
   item: blank
   itemSpriteContainer: {fileID: 770331328}
+  gameManager: {fileID: 0}
   type: none
   draggable: 1
 --- !u!114 &140469629
@@ -819,6 +820,7 @@ MonoBehaviour:
   coords: 
   item: blank
   itemSpriteContainer: {fileID: 1516371536}
+  gameManager: {fileID: 0}
   type: none
   draggable: 1
 --- !u!114 &444198514
@@ -1010,12 +1012,14 @@ MonoBehaviour:
   - tomatoClub
   - slingPeas
   - cleaver
+  - tomatoSoup
   itemSprites:
   - {fileID: 21300000, guid: 6b6b6ec2a5937f54a958ff2de7234f1d, type: 3}
   - {fileID: 21300000, guid: 91f1c2afc6895b149b9ad8386df806f7, type: 3}
   - {fileID: -288229423, guid: cdaa3a138769339458e5f09fa9aec212, type: 3}
   - {fileID: -1282514246, guid: 553ec6df3d03054469b49beda362d0c7, type: 3}
   - {fileID: 21300000, guid: 155727dcba70ae146b5f0566fed2ddc2, type: 3}
+  - {fileID: 21300000, guid: b51cbe2300a207f4d88f715bd27a8be0, type: 3}
   debugSprite: {fileID: 21300000, guid: 02af9e0b802ce0949a2af13779fabbcc, type: 3}
 --- !u!4 &510710999
 Transform:
@@ -1199,6 +1203,7 @@ MonoBehaviour:
   coords: 
   item: blank
   itemSpriteContainer: {fileID: 151360166}
+  gameManager: {fileID: 0}
   type: none
   draggable: 0
 --- !u!114 &610195032
@@ -1350,7 +1355,7 @@ GameObject:
   - component: {fileID: 673834177}
   - component: {fileID: 673834176}
   - component: {fileID: 673834175}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: cookButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1365,7 +1370,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 673834173}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -314.14975}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.5, y: 0.48, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1421,13 +1426,13 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
+      - m_Target: {fileID: 1112951513}
+        m_TargetAssemblyTypeName: Crafting, Assembly-CSharp
+        m_MethodName: Cook
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -1556,7 +1561,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1078838626}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1593,7 +1598,7 @@ GameObject:
   - component: {fileID: 1112951510}
   - component: {fileID: 1112951512}
   - component: {fileID: 1112951513}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: CraftingUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1840,7 +1845,7 @@ GameObject:
   - component: {fileID: 1249991458}
   - component: {fileID: 1249991460}
   - component: {fileID: 1249991459}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: ArrowDown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1881,7 +1886,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -2171,7 +2176,7 @@ GameObject:
   - component: {fileID: 1702548404}
   - component: {fileID: 1702548406}
   - component: {fileID: 1702548405}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: BG
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2212,7 +2217,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -2333,7 +2338,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -2732,6 +2737,7 @@ MonoBehaviour:
   coords: 
   item: tomato
   itemSpriteContainer: {fileID: 6957236204126534268}
+  gameManager: {fileID: 0}
   type: 
   draggable: 1
 --- !u!114 &2874747540107304273
@@ -2750,6 +2756,7 @@ MonoBehaviour:
   coords: 
   item: blank
   itemSpriteContainer: {fileID: 6957236203822981947}
+  gameManager: {fileID: 0}
   type: 
   draggable: 1
 --- !u!114 &2874747541166849563
@@ -2768,6 +2775,7 @@ MonoBehaviour:
   coords: 
   item: tomato
   itemSpriteContainer: {fileID: 6957236202733846641}
+  gameManager: {fileID: 0}
   type: 
   draggable: 1
 --- !u!114 &2874747541484154764
@@ -2786,6 +2794,7 @@ MonoBehaviour:
   coords: 
   item: blank
   itemSpriteContainer: {fileID: 6957236202513240550}
+  gameManager: {fileID: 0}
   type: 
   draggable: 1
 --- !u!222 &3204625177212591054
@@ -2974,6 +2983,7 @@ MonoBehaviour:
   coords: 
   item: blank
   itemSpriteContainer: {fileID: 2060092346661183124}
+  gameManager: {fileID: 0}
   type: none
   draggable: 1
 --- !u!224 &6957236202513240549

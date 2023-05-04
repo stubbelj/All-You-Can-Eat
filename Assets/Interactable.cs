@@ -4,15 +4,17 @@ using UnityEngine;
 
 public abstract class Interactable : RoomObject
 {
-    GameManager gameManager;
-    GameObject interactPopup;
+    public GameManager gameManager;
+    public GameObject interactPopup;
     float interactRange = 200f;
     bool activateable = false;
+    bool activated = false;
     // Start is called before the first frame update
     void Start()
     {
         gameManager = GameManager.inst;
         interactPopup = transform.Find("InteractPopup").gameObject;
+        AbstractStart();
     }
 
     void Update() {
@@ -22,12 +24,20 @@ public abstract class Interactable : RoomObject
         } else {
             interactPopup.SetActive(false);
             activateable = false;
+            if (activated == true) {
+                Deactivate();
+            }
         }
 
         if (Input.GetKey("e") && activateable) {
             Activate();
+            activated = true;
         }
     }
 
     public abstract void Activate();
+
+    public abstract void Deactivate();
+
+    public abstract void AbstractStart();
 }

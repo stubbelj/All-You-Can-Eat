@@ -9,14 +9,21 @@ public class Slot : MonoBehaviour
     public int[] coords;
     public string item = "blank";
     public GameObject itemSpriteContainer;
-    GameManager gameManager;
+    public GameManager gameManager;
     public string type = "none";
     public bool draggable = true;
     List<string> weaponList = new List<string>{
         "tomatoClub", "slingPeas", "cleaver"
     };
+    List<string> itemList = new List<string>{
+        "tomatoClub", "slingPeas", "cleaver"
+    };
 
     void Awake() {
+        gameManager = GameManager.inst;
+    }
+
+    void Start() {
         gameManager = GameManager.inst;
     }
 

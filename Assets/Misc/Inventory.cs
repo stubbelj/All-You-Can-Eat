@@ -122,7 +122,7 @@ public class Inventory : MonoBehaviour
         }
         activeDrag = null;
         Sprite nullSprite = null;
-        gameManager.ChangeReticle(gameManager.debugSprite);
+        gameManager.ChangeReticle(nullSprite);
     }
 
     Slot SlotFromCoords(Vector2 point) {

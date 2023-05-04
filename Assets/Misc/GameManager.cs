@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     //for each script you would have to update every script manually every time you changed the value of currentFloor.
     public Camera mainCam;
     public Canvas uiCanvas;
+    public GameObject craftingUI;
     public GameObject reticlePrefab;
     public Player player;
     public List<GameObject> roomPrefabs = new List<GameObject>();
@@ -48,11 +49,11 @@ public class GameManager : MonoBehaviour
         GameObject newReticle = GameObject.Instantiate(reticlePrefab, new Vector3(0, 0, 0), Quaternion.identity);
         newReticle.transform.SetParent(uiCanvas.transform);
         reticle = newReticle.GetComponent<Reticle>();
+        craftingUI = GameObject.Find("Canvas").transform.Find("UI").Find("CraftingUI").gameObject;
     }
 
     public IEnumerator LateStart() {
         yield return new WaitForSeconds(0.5f);
-        ChangeReticle(debugSprite);
         InitLevel();
     }
 

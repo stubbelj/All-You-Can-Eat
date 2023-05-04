@@ -67,14 +67,7 @@ public class Player : MonoBehaviour
         }
 
         if (Input.GetKey("escape") && pauseDelay == 0) {
-            pauseDelay = 0.1f;
-            if (Time.timeScale == 1) {
-                Time.timeScale = 0;
-            } else {
-                Time.timeScale = 1;
-                gameManager.EndDrag(true);
-            }
-            ToggleInventory();
+            EscapePress();
         }
 
         pauseDelay -= Time.unscaledDeltaTime;
@@ -98,7 +91,18 @@ public class Player : MonoBehaviour
     void Die() {
         //dead
     }
-
+    
+    public void EscapePress() {
+        pauseDelay = 0.1f;
+        if (Time.timeScale == 1) {
+            Time.timeScale = 0;
+        } else {
+            Time.timeScale = 1;
+            gameManager.EndDrag(true);
+        }
+        ToggleInventory();
+    }
+    
     void ToggleInventory() {
         if (!inventoryMenu.activeSelf) {
             inventoryMenu.SetActive(true);
@@ -107,6 +111,9 @@ public class Player : MonoBehaviour
             inventoryMenu.SetActive(false);
             activeHotbar.SetActive(true);
             activeHotbar.GetComponent<ActiveHotbar>().UpdateInventory();
+            if (gameManager.craftingUI.activeSelf) {
+                gameManager.craftingUI.SetActive(false);
+            }
         }
     }
 
@@ -128,15 +135,13 @@ public class Player : MonoBehaviour
             case "left":
                 if (!sr.flipX) {
                     sr.flipX = true;
-                    currWeapon.transform.position -= new Vector3(2 * Mathf.Abs(currWeapon.transform.localPosition.x), 0, 0);
-                    currWeapon.sr.flipX = true;
+                    weapons.transform.localScale = new Vector3(-weapons.transform.localScale.x, weapons.transform.localScale.y, 0);
                 }
                 break;
             case "right":
                 if (sr.flipX) {
                     sr.flipX = false;
-                    currWeapon.transform.position += new Vector3(2 * Mathf.Abs(currWeapon.transform.localPosition.x), 0, 0);
-                    currWeapon.sr.flipX = false;
+                    weapons.transform.localScale = new Vector3(-weapons.transform.localScale.x, weapons.transform.localScale.y, 0);
                 }
                 break;
         }
