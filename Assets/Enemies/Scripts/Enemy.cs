@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Enemy : MonoBehaviour
+public abstract class Enemy : RoomObject
 {
     public GameManager gameManager;
     //this is the GameManager class I made to store globally useful or game-function related variables and functions, like a reference to the player or functions to initialize the level

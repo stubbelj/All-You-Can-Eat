@@ -20,6 +20,8 @@ public abstract class Room : MonoBehaviour
     public List<GameObject> doors = new List<GameObject>();
     public List<string> doorSide = new List<string>();
 
+    public List<RoomObject> roomObjects = new List<RoomObject>();
+
     string state = "inactive";
     //inactive, active, complete
 
@@ -102,6 +104,18 @@ public abstract class Room : MonoBehaviour
             return transform.position + new Vector3(tilemapBounds.extents.x, 0, 0);
         }
         return Vector3.zero;
+    }
+
+    public void ActivateRoomObjects() {
+        foreach (RoomObject robj in roomObjects) {
+            robj.gameObject.SetActive(true);
+        }
+    }
+
+    public void DeactivateRoomObjects() {
+        foreach (RoomObject robj in roomObjects) {
+            robj.gameObject.SetActive(false);
+        }
     }
 
     public abstract void Activate();

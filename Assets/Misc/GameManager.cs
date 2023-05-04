@@ -19,7 +19,7 @@ public class GameManager : MonoBehaviour
     public List<Sprite> itemSprites = new List<Sprite>();
     public Dictionary<string, int> itemIndices = new Dictionary<string, int>{
     };
-    public GameObject[] debugPrefab;
+    public Sprite debugSprite;
 
     public System.Random r = new System.Random(430);
 
@@ -52,6 +52,7 @@ public class GameManager : MonoBehaviour
 
     public IEnumerator LateStart() {
         yield return new WaitForSeconds(0.5f);
+        ChangeReticle(debugSprite);
         InitLevel();
     }
 
@@ -263,9 +264,6 @@ public class GameManager : MonoBehaviour
                 string startDir = spawnedRooms[i].GetComponent<Room>().doorSide[1];
                 string endDir = spawnedRooms[i + 1].GetComponent<Room>().doorSide[0];
                 if (startDir == endDir) {
-                    GameObject debugger = GameObject.Instantiate(debugPrefab[2], spawnedRooms[i + 1].transform.position, Quaternion.identity);
-                    debugger.transform.SetParent(compositeParent.transform);
-                    debugger.name = spawnedRooms[i + 1].name + "tomato debugger";
                     //swap entrance and exit if incompatible
                     string temp = spawnedRooms[i + 1].GetComponent<Room>().doorSide[0];
                     spawnedRooms[i + 1].GetComponent<Room>().doorSide[0] = spawnedRooms[i + 1].GetComponent<Room>().doorSide[1];
@@ -332,10 +330,6 @@ public class GameManager : MonoBehaviour
                 }
                 GameObject hallwayParent = new GameObject("hallwayParent");
                 hallwayParent.transform.SetParent(compositeParent.transform);
-                GameObject debug1 = GameObject.Instantiate(debugPrefab[0], startPos, Quaternion.identity);
-                debug1.transform.SetParent(hallwayParent.transform);
-                GameObject debug2 = GameObject.Instantiate(debugPrefab[1], endPos, Quaternion.identity);
-                debug2.transform.SetParent(hallwayParent.transform);
 
                 int debugCounter3 = 100;
                 while (Mathf.Abs((curr - endPos).magnitude) > hallwayWidth && debugCounter3 > 0) {
@@ -424,7 +418,7 @@ public class GameManager : MonoBehaviour
                     
                 debugCounter3--;
                 }
-                print(debugCounter3);
+                //print(debugCounter3);
             }
 
             foreach(GameObject room in spawnedRooms) {
@@ -444,7 +438,7 @@ public class GameManager : MonoBehaviour
             debugCounter--;
         }
 
-        print(debugCounter);
+        //print(debugCounter);
 
         List<GameObject> roomsListVal = new List<GameObject>();
         foreach(GameObject obj in spawnedRooms) {

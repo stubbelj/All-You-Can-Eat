@@ -22,7 +22,9 @@ public class smallEnemyRoom : Room
     public IEnumerator spawnEnemies() {
         for(int i = 0; i < 5; i++) {
             Transform spawnPoint = spawnPoints[r.Next(0, spawnPoints.Count)];
-            Instantiate(enemyPrefabs[r.Next(0, enemyPrefabs.Count)], spawnPoint.position, spawnPoint.rotation);
+            GameObject newEnemy = GameObject.Instantiate(enemyPrefabs[r.Next(0, enemyPrefabs.Count)], spawnPoint.position, spawnPoint.rotation);
+            newEnemy.GetComponent<Enemy>().parentRoom = this;
+            roomObjects.Add(newEnemy.GetComponent<Enemy>());
             yield return new WaitForSeconds(2f);
         }
         Deactivate();

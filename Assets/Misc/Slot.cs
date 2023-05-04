@@ -11,6 +11,7 @@ public class Slot : MonoBehaviour
     public GameObject itemSpriteContainer;
     GameManager gameManager;
     public string type = "none";
+    public bool draggable = true;
     List<string> weaponList = new List<string>{
         "tomatoClub", "slingPeas", "cleaver"
     };
