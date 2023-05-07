@@ -7,6 +7,7 @@ public class Player : MonoBehaviour
 {
     public Inventory inventory;
     public TMP_Text healthText;
+    public Item currItem;
     public Weapon currWeapon;
     public GameObject inventoryMenu;
     public GameObject activeHotbar;
@@ -63,7 +64,12 @@ public class Player : MonoBehaviour
         rb.velocity = Vector2.ClampMagnitude(rb.velocity, maxSpeed);
 
         if(Input.GetKey("space")) {
-            StartCoroutine(currWeapon.Attack());
+            currItem.Activate();
+            //StartCoroutine(currWeapon.Attack());
+        }
+
+        if (Input.GetKey("tab")) {
+            ToggleInventory();
         }
 
         if (Input.GetKey("escape") && pauseDelay == 0) {
@@ -100,22 +106,42 @@ public class Player : MonoBehaviour
             Time.timeScale = 1;
             gameManager.EndDrag(true);
         }
-        ToggleInventory();
     }
+
+    bool inventoryToggleDelay = false;
     
-    void ToggleInventory() {
-        if (!inventoryMenu.activeSelf) {
-            inventoryMenu.SetActive(true);
-            activeHotbar.SetActive(false);
-        } else {
-            inventoryMenu.SetActive(false);
-            activeHotbar.SetActive(true);
-            activeHotbar.GetComponent<ActiveHotbar>().UpdateInventory();
-            if (gameManager.craftingUI.activeSelf) {
-                gameManager.craftingUI.SetActive(false);
+    public void ToggleInventory() {
+        if (!inventoryToggleDelay) {
+            Delay(ref inventoryToggleDelay);
+            if (!inventoryMenu.activeSelf) {
+                inventoryMenu.SetActive(true);
+                activeHotbar.SetActive(false);
+            } else {
+                inventoryMenu.SetActive(false);
+                activeHotbar.SetActive(true);
+                activeHotbar.GetComponent<ActiveHotbar>().UpdateInventory();
+                if (gameManager.craftingUI.activeSelf) {
+                    gameManager.craftingUI.SetActive(false);
+                }
             }
         }
     }
+
+    public void Delay(ref bool flag, float waitTime = 0.1f) {
+        IEnumerator DelayItr(bool flag, float itrWaitTime = 0.1f) {
+            flag = true;
+            yield return new WaitForSeconds(itrWaitTime);
+            flag = false;
+        }
+
+        if (waitTime != 0.5f) {
+            StartCoroutine(DelayItr(flag, itrWaitTime : waitTime));
+        } else {
+            StartCoroutine(DelayItr(flag));
+        }
+    }
+
+    
 
     public void ChangeWeapon(string weaponName) {
         currWeapon.gameObject.SetActive(false);

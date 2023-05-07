@@ -7,7 +7,7 @@ public class Slot : MonoBehaviour
 {
     public Inventory inventory;
     public int[] coords;
-    public string item = "blank";
+    public Item item;
     public GameObject itemSpriteContainer;
     public GameManager gameManager;
     public string type = "none";
@@ -25,15 +25,30 @@ public class Slot : MonoBehaviour
 
     void Start() {
         gameManager = GameManager.inst;
+        item = GetComponent<Item>();
     }
 
-    public void ChangeItem(string newItemName) {
-        if (newItemName == "") {
-            newItemName = "blank";
-        } else if (weaponList.Contains(newItemName)) {
-            type = "weapon";
+    public void ChangeItem(Item newItem) {
+        if (newItem != null) {
+            if (weaponList.Contains(newItem.itemName)) {
+                type = "weapon";
+            }
+            itemSpriteContainer.GetComponent<Image>().sprite = gameManager.itemSprites[gameManager.itemIndices[newItem.itemName]];
+        } else {
+            itemSpriteContainer.GetComponent<Image>().sprite = gameManager.itemSprites[gameManager.itemIndices["blank"]];
         }
-        item = newItemName;
-        itemSpriteContainer.GetComponent<Image>().sprite = gameManager.itemSprites[gameManager.itemIndices[newItemName]];
+        item.ChangeItem(newItem);
+    }
+
+    public void ChangeItem(string newItem) {
+        if (newItem != "") {
+            if (weaponList.Contains(newItem)) {
+                type = "weapon";
+            }
+            itemSpriteContainer.GetComponent<Image>().sprite = gameManager.itemSprites[gameManager.itemIndices[newItem]];
+        } else {
+            itemSpriteContainer.GetComponent<Image>().sprite = gameManager.itemSprites[gameManager.itemIndices["blank"]];
+        }
+        item.ChangeItem(newItem);
     }
 }

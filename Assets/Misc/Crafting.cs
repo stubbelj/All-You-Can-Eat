@@ -27,12 +27,12 @@ public class Crafting : MonoBehaviour
         print("cookery");
         List<string> ingred = new List<string>();
         foreach (Slot slot in ingredientSlots) {
-            ingred.Add(slot.item);
+            ingred.Add(slot.item.itemName);
         }
         string recipe = GetRecipe(ingred);
         if (recipe != null) {
             foreach(Slot ingredientSlot in ingredientSlots) {
-                ingredientSlot.ChangeItem("blank");
+                ingredientSlot.ChangeItem((Item)null);
             }
             resultsSlot.ChangeItem(recipe);
             resultsSlot.draggable = true;

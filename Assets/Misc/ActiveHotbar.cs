@@ -59,7 +59,7 @@ public class ActiveHotbar : MonoBehaviour
                 }
             }
 
-            if (slots[curr].item != "blank") {
+            if (slots[curr].item.itemName != "blank") {
                 break;
             }
             if (curr == prev) {
@@ -74,8 +74,10 @@ public class ActiveHotbar : MonoBehaviour
         tempColor.a = 1f;
         slots[curr].itemSpriteContainer.GetComponent<Image>().color = tempColor;
 
+        player.currItem = slots[curr].item;
+
         if(slots[curr].type == "weapon") {
-            player.ChangeWeapon(slots[curr].item);
+            player.ChangeWeapon(slots[curr].item.itemName);
         }
     }
 

@@ -81,16 +81,16 @@ public class Inventory : MonoBehaviour
 
     public void AddItem(string itemName) {
         for (int i = 0; i < inventoryWidth; i++) {
-            if (slots[i][inventoryHeight - 1].item == "blank"){
-                slots[i][inventoryHeight - 1].ChangeItem(itemName);
+            if (slots[i][inventoryHeight - 1].item.itemName == "blank"){
+                slots[i][inventoryHeight - 1].ChangeItem(slots[i][inventoryHeight - 1].item);
                 gameManager.player.activeHotbar.GetComponent<ActiveHotbar>().UpdateInventory();
                 return;
             }
         }
         for (int j = 0; j < inventoryHeight - 1; j++) {
             for (int i = 0; i < inventoryWidth; i++) {
-                if (slots[i][j].item == "blank"){
-                    slots[i][j].ChangeItem(itemName);
+                if (slots[i][j].item.itemName == "blank"){
+                    slots[i][j].ChangeItem(slots[i][j].item);
                     gameManager.player.activeHotbar.GetComponent<ActiveHotbar>().UpdateInventory();
                     return;
                 }
@@ -104,7 +104,7 @@ public class Inventory : MonoBehaviour
         if (hoverSlot != null && hoverSlot.draggable) {
             dragging = true;
             activeDrag = hoverSlot;
-            gameManager.ChangeReticle(activeDrag.item);
+            gameManager.ChangeReticle(activeDrag.item.itemName);
         }
     }
 
@@ -115,7 +115,7 @@ public class Inventory : MonoBehaviour
             //print(slots[0][1].transform.position);
             Slot hoverSlot = SlotFromCoords(hoverCoords);
             if (hoverSlot != null && hoverSlot.draggable) {
-                string tempHoverSlotItem = hoverSlot.item;
+                Item tempHoverSlotItem = hoverSlot.item;
                 hoverSlot.ChangeItem(activeDrag.item);
                 activeDrag.ChangeItem(tempHoverSlotItem);
             }
@@ -138,17 +138,16 @@ public class Inventory : MonoBehaviour
     }
     
     public bool InsideRectTransform(Vector2 point, Slot slot, float errorMargin = 0) {
-        //print(point.x + ", " + point.y);
-        //print(slot.gameObject.transform.position.x - slot.gameObject.GetComponent<RectTransform>().rect.width / 2);
-        //print(slot.gameObject.transform.position.y - slot.gameObject.GetComponent<RectTransform>().rect.height / 2);
         //checks if a point falls within the bounds of a rectransform
         float slotWidth = 30f;
         float slotHeight = 30f;
-        //slot.gameObject.GetComponent<RectTransform>().rect.width / 2
+        //why is this correct? the rect transform width is 100 so it makes no sense
+
+
         if (point.x > slot.gameObject.transform.position.x - slotWidth / 2 + errorMargin) {
             if ((point.x < slot.gameObject.transform.position.x + slotWidth / 2 - errorMargin)) {
-                if ((point.y > slot.gameObject.transform.position.y - slotWidth / 2 + errorMargin)) {
-                    if ((point.y < slot.gameObject.transform.position.y + slotWidth / 2 - errorMargin)) {
+                if ((point.y > slot.gameObject.transform.position.y - slotHeight / 2 + errorMargin)) {
+                    if ((point.y < slot.gameObject.transform.position.y + slotHeight / 2 - errorMargin)) {
                         return true;
                     }
                 }
