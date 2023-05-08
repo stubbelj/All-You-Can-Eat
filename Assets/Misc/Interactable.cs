@@ -6,9 +6,11 @@ public abstract class Interactable : RoomObject
 {
     public GameManager gameManager;
     public GameObject interactPopup;
-    float interactRange = 200f;
-    bool activateable = false;
-    bool activated = false;
+    float interactRange = 100f;
+    protected bool activateable = false;
+    protected bool activated = false;
+    
+    bool activateBuffer = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -29,10 +31,20 @@ public abstract class Interactable : RoomObject
             }
         }
 
-        if (Input.GetKey("e") && activateable) {
-            Activate();
-            activated = true;
+        if (Input.GetKey("e") && activateable && !activateBuffer) {
+            activateBuffer = true;
+            StartCoroutine(RestoreBuffer());
+            if (activated == false) {
+                Activate();
+            } else {
+                Deactivate();
+            }
         }
+    }
+
+    protected IEnumerator RestoreBuffer() {
+        yield return new WaitForSeconds(1f);
+        activateBuffer = false;
     }
 
     public abstract void Activate();
