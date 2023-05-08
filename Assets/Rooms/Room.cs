@@ -19,14 +19,20 @@ public abstract class Room : MonoBehaviour
     public List<Transform> doorways = new List<Transform>();
     public List<GameObject> doors = new List<GameObject>();
     public List<string> doorSide = new List<string>();
-
     public List<RoomObject> roomObjects = new List<RoomObject>();
+    
+    Transform transforms;
 
     string state = "inactive";
     //inactive, active, complete
 
     void Awake()
     {
+        transforms = transform.Find("Transforms");
+        foreach (Transform tran in transforms.Find("Doorways")) {
+            doorways.Add(tran);
+            doors.Add(tran.Find("Door").gameObject);
+        }
     }
 
     void Start() {
@@ -66,26 +72,26 @@ public abstract class Room : MonoBehaviour
         //bounds = new float[]{tilemapBounds.center.x - tilemapBounds.extents.x, tilemapBounds.center.x + tilemapBounds.extents.x, tilemapBounds.center.y - tilemapBounds.extents.y, tilemapBounds.center.y + tilemapBounds.extents.y};
         
         //shuffle door order - which are entrances, exits, etc.
-        int[] shuffleIndices = new int[]{r.Next(0, doors.Count), r.Next(0, doors.Count)};
-        GameObject tempDoor = doors[shuffleIndices[0]];
-        doors[shuffleIndices[0]] = doors[shuffleIndices[1]];
-        doors[shuffleIndices[1]] = tempDoor;
+        int[] shuffleIndices = new int[]{r.Next(0, doorways.Count), r.Next(0, doorways.Count)};
+        Transform tempDoorway = doorways[shuffleIndices[0]];
+        doorways[shuffleIndices[0]] = doorways[shuffleIndices[1]];
+        doorways[shuffleIndices[1]] = tempDoorway;
 
-        for (int i = 0; i < doors.Count; i++) {
-            //find which side the door is on
+        for (int i = 0; i < doorways.Count; i++) {
+            //find which side the doorway is on
             string bestSide = "left";
-            float bestMag = (transform.position + new Vector3(-tilemapBounds.extents.x, 0, 0) - doors[i].transform.position).magnitude;
-            if ((transform.position + new Vector3(tilemapBounds.extents.x, 0, 0) - doors[i].transform.position).magnitude < bestMag) {
+            float bestMag = (transform.position + new Vector3(-tilemapBounds.extents.x, 0, 0) - doorways[i].transform.position).magnitude;
+            if ((transform.position + new Vector3(tilemapBounds.extents.x, 0, 0) - doorways[i].transform.position).magnitude < bestMag) {
                 bestSide = "right";
-                bestMag = (transform.position + new Vector3(tilemapBounds.extents.x, 0, 0) - doors[i].transform.position).magnitude;
+                bestMag = (transform.position + new Vector3(tilemapBounds.extents.x, 0, 0) - doorways[i].transform.position).magnitude;
             }
-            if ((transform.position + new Vector3(0, tilemapBounds.extents.y, 0) - doors[i].transform.position).magnitude < bestMag) {
+            if ((transform.position + new Vector3(0, tilemapBounds.extents.y, 0) - doorways[i].transform.position).magnitude < bestMag) {
                 bestSide = "up";
-                bestMag = (transform.position + new Vector3(0, tilemapBounds.extents.y, 0) - doors[i].transform.position).magnitude;
+                bestMag = (transform.position + new Vector3(0, tilemapBounds.extents.y, 0) - doorways[i].transform.position).magnitude;
             }
-            if ((transform.position + new Vector3(0, -tilemapBounds.extents.y, 0) - doors[i].transform.position).magnitude < bestMag) {
+            if ((transform.position + new Vector3(0, -tilemapBounds.extents.y, 0) - doorways[i].transform.position).magnitude < bestMag) {
                 bestSide = "down";
-                bestMag = (transform.position + new Vector3(0, -tilemapBounds.extents.y, 0) - doors[i].transform.position).magnitude;
+                bestMag = (transform.position + new Vector3(0, -tilemapBounds.extents.y, 0) - doorways[i].transform.position).magnitude;
             }
             doorSide.Add(bestSide);
         }

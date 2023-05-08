@@ -242,6 +242,9 @@ public class GameManager : MonoBehaviour
             foreach(string roomType in roomSpawnList) {
                 //spawn each room!
                 GameObject newRoom = GameObject.Instantiate(roomPrefabs[roomIndexes[roomType][r.Next(0, roomIndexes[roomType].Length)]]);
+                if (roomIndexes[roomType][r.Next(0, roomIndexes[roomType].Length)] == 0) {
+                    player.transform.position = newRoom.transform.position;
+                }
                 newRoom.name = spawnedRoomNames[ij];
                 newRoom.transform.SetParent(compositeParent.transform);
                 newRoom.GetComponent<Room>().Init();
@@ -269,9 +272,9 @@ public class GameManager : MonoBehaviour
                     string temp = spawnedRooms[i + 1].GetComponent<Room>().doorSide[0];
                     spawnedRooms[i + 1].GetComponent<Room>().doorSide[0] = spawnedRooms[i + 1].GetComponent<Room>().doorSide[1];
                     spawnedRooms[i + 1].GetComponent<Room>().doorSide[1] = temp;
-                    GameObject tempDoor = spawnedRooms[i + 1].GetComponent<Room>().doors[0];
-                    spawnedRooms[i + 1].GetComponent<Room>().doors[0] = spawnedRooms[i + 1].GetComponent<Room>().doors[1];
-                    spawnedRooms[i + 1].GetComponent<Room>().doors[1] = tempDoor;
+                    Transform tempDoorway = spawnedRooms[i + 1].GetComponent<Room>().doorways[0];
+                    spawnedRooms[i + 1].GetComponent<Room>().doorways[0] = spawnedRooms[i + 1].GetComponent<Room>().doorways[1];
+                    spawnedRooms[i + 1].GetComponent<Room>().doorways[1] = tempDoorway;
                     endDir = spawnedRooms[i + 1].GetComponent<Room>().doorSide[0];
                     swapFlags[i] = true;
                 }
@@ -296,8 +299,8 @@ public class GameManager : MonoBehaviour
                     }
                 }
                 //smooth out small gaps!
-                Vector3 startPos = spawnedRooms[i].GetComponent<Room>().doors[1].transform.position;
-                Vector3 endPos = spawnedRooms[i + 1].GetComponent<Room>().doors[0].transform.position;
+                Vector3 startPos = spawnedRooms[i].GetComponent<Room>().doorways[1].transform.position;
+                Vector3 endPos = spawnedRooms[i + 1].GetComponent<Room>().doorways[0].transform.position;
                 if ((endPos.x - startPos.x) % hallwayWidth != 0) {
                     spawnedRooms[i + 1].transform.position += new Vector3((endPos.x > startPos.x ? -1 : 1) * Mathf.Abs((endPos.x - startPos.x) % hallwayWidth), 0, 0);
                 }
@@ -307,6 +310,7 @@ public class GameManager : MonoBehaviour
             }
 
 
+            GameObject newHallway = null;
             //connect rooms in composite by hallways
             //draw hallways directly into rooms
         
@@ -321,19 +325,19 @@ public class GameManager : MonoBehaviour
 
                 }
                 if (dir == "right") {
-                        curr += new Vector3(hallwayWidth, 0, 0);
+                        curr += new Vector3(hallwayWidth / 2, 0, 0);
                 } else if (dir == "left") {
-                        curr += new Vector3(-hallwayWidth, 0, 0);
+                        curr += new Vector3(-hallwayWidth / 2, 0, 0);
                 } else if (dir == "up") {
-                        curr += new Vector3(0, hallwayWidth, 0);
+                        curr += new Vector3(0, hallwayWidth / 2, 0);
                 } else if (dir == "down") {
-                        curr += new Vector3(0, -hallwayWidth, 0);
+                        curr += new Vector3(0, -hallwayWidth / 2, 0);
                 }
                 GameObject hallwayParent = new GameObject("hallwayParent");
                 hallwayParent.transform.SetParent(compositeParent.transform);
 
                 int debugCounter3 = 100;
-                while (Mathf.Abs((curr - endPos).magnitude) > hallwayWidth && debugCounter3 > 0) {
+                while ((Mathf.Abs(curr.x - endPos.x) > hallwayWidth || Mathf.Abs(curr.y - endPos.y) > hallwayWidth) && debugCounter3 > 0) {
                     //while not at end point
                     Vector3 transformation = new Vector3(1f, 1f, 1f);
                     if (dir == "right") {
@@ -345,7 +349,7 @@ public class GameManager : MonoBehaviour
                     } else if (dir == "down") {
                         transformation = new Vector3(0, -hallwayWidth, 0);
                     }
-                    GameObject newHallway = GameObject.Instantiate(hallwayPrefabs[dir == "right" || dir == "left" ? 0 : 1], curr + transformation, Quaternion.identity);
+                    newHallway = GameObject.Instantiate(hallwayPrefabs[dir == "right" || dir == "left" ? 0 : 1], curr + transformation, Quaternion.identity);
                     newHallway.name = spawnedRoomNames[i] + "hallway";
                     newHallway.transform.SetParent(hallwayParent.transform);
                     curr = newHallway.transform.position;
@@ -355,7 +359,7 @@ public class GameManager : MonoBehaviour
                     if (dir == "left" || dir == "right") {
                         if (Mathf.Abs(curr.x - endPos.x) < hallwayWidth) {
                             //if done with this axis of movement
-                            if (curr.y > endPos.y) {
+                            if (curr.y > endPos.y && (Mathf.Abs(curr.y - endPos.y) > hallwayWidth)) {
                                 if (dir == "left") {
                                     //left -> down
                                     prefabIndex = 2;
@@ -366,7 +370,7 @@ public class GameManager : MonoBehaviour
 
                                 }
                                 dir = "down";
-                            } else {
+                            } else if (Mathf.Abs(curr.y - endPos.y) > hallwayWidth){
                                 if (dir == "left") {
                                     //left -> up
                                     prefabIndex = 3;
@@ -387,7 +391,7 @@ public class GameManager : MonoBehaviour
                     } else {
                         if (Mathf.Abs(curr.y - endPos.y) < hallwayWidth) {
                             //if done with this axis of movement
-                            if (curr.x > endPos.x) {
+                            if (curr.x > endPos.x && (Mathf.Abs(curr.x - endPos.x) > hallwayWidth)) {
                                 if (dir == "up") {
                                     //up -> left
                                     prefabIndex = 2;
@@ -398,7 +402,7 @@ public class GameManager : MonoBehaviour
                                     flip = true;
                                 }
                                 dir = "left";
-                            } else {
+                            } else if (Mathf.Abs(curr.x - endPos.x) > hallwayWidth){
                                 if (dir == "up") {
                                     //up -> right
                                     prefabIndex = 2;
@@ -419,6 +423,7 @@ public class GameManager : MonoBehaviour
                     
                 debugCounter3--;
                 }
+                Destroy(newHallway);
                 //print(debugCounter3);
             }
 

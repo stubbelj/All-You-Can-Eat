@@ -1,5 +1,6 @@
 ---------Bugs-------------
-
+rooms not getting shifted correctly
+rooms not lining up _exactly_, but it might just be bc wierd doorway pos
 ---------Luca Tasks------------
 finish implementing crafting
 implement perks

@@ -664,6 +664,7 @@ MonoBehaviour:
   - {fileID: 4070628267053077940}
   - {fileID: 6677438731935991735}
   doorSide: []
+  roomObjects: []
   enemyPrefabs:
   - {fileID: 777864791608692311, guid: 869e63e3baffeed42acdd9f6dfa63d0a, type: 3}
 --- !u!1 &2875087155621603124
@@ -1127,7 +1128,7 @@ GameObject:
   - component: {fileID: 6029768343154483895}
   - component: {fileID: 4116086355046625406}
   m_Layer: 8
-  m_Name: Door (1)
+  m_Name: Door
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

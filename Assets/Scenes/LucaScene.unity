@@ -992,10 +992,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainCam: {fileID: 590403250}
   uiCanvas: {fileID: 1602780647}
+  craftingUI: {fileID: 0}
   reticlePrefab: {fileID: 811110360195729793, guid: f45e5e18fd7ed2c4fbe72af27e50ad1b, type: 3}
   player: {fileID: 1220599158}
   roomPrefabs:
-  - {fileID: 2662714958265385943, guid: 100f2be28ad49ad449562b192f66f765, type: 3}
+  - {fileID: 2137471469554003562, guid: b6c09d3a0aba8194fa76f8134948c6c8, type: 3}
   - {fileID: 4024012840986906441, guid: a287110b048c51f46a959d3052c24744, type: 3}
   - {fileID: 7192809604200702624, guid: 2efb0f34243e1fe4882777dc32ea5215, type: 3}
   - {fileID: 5657192265047276697, guid: c021da54985ac514f963b9af0df7f03e, type: 3}
