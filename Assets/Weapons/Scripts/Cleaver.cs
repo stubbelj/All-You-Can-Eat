@@ -41,6 +41,8 @@ public class Cleaver : Weapon
 
     void OnCollisionEnter2D (Collision2D col) {
         if (col.gameObject.tag == "Enemy") {
+            print(col.gameObject);
+            print(col.gameObject.GetComponent<Enemy>());
             col.gameObject.GetComponent<Enemy>().TakeDamage(weaponDamage + attackDamageMod);
         }
     }
