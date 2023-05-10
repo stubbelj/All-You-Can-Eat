@@ -93,7 +93,6 @@ public class Player : MonoBehaviour
     }
 
     public void TakeDamage(int damage) {
-        print("take damage");
         //handle damage
         currHP -= damage;
         currHP = Mathf.Clamp(currHP, 0, maxHP);

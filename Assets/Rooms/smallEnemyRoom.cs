@@ -7,6 +7,7 @@ public class smallEnemyRoom : Room
     public List<GameObject> enemyPrefabs = new List<GameObject>();
 
     public override void Activate() {
+        r = gameManager.r;
         foreach(GameObject door in doors) {
             door.SetActive(true);
         }
@@ -14,8 +15,10 @@ public class smallEnemyRoom : Room
     }
 
     public override void Deactivate() {
-        foreach(GameObject door in doors) {
-            door.SetActive(false);
+        foreach(GameObject doorParent in doors) {
+            foreach(Transform door in doorParent.transform) {
+                door.gameObject.SetActive(false);
+            }
         }
     }
 

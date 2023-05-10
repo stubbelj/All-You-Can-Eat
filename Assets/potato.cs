@@ -63,9 +63,8 @@ public class potato : Enemy
     void OnCollisionEnter2D (Collision2D col) {
         //gets called every time a Collider2D component on another gameObject runs into the Collider2D on this object.
         //Collision2D col stores several things, most importantly the game object that the other collider is attached to
-        if (col.gameObject.tag == "Player") {
+        if (col.GetContact(0).collider.gameObject.tag == "Player") {
             //tags are just a string that you can use to label objects, and are mostly so that you can assign editor stuff like "enemies don't collide with enemies"
-            print(col.gameObject.name);
             player.TakeDamage(contactDamage);
             //when this enemy collides with the player, deal contact damage to them!
         }

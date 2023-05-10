@@ -5,7 +5,7 @@ using UnityEngine.Tilemaps;
 
 public abstract class Room : MonoBehaviour
 {
-    GameManager gameManager;
+    public GameManager gameManager;
     public System.Random r;
 
     public float[] bounds;
@@ -41,6 +41,8 @@ public abstract class Room : MonoBehaviour
 
     IEnumerator LateStart() {
         yield return new WaitForSeconds(0.1f);
+        gameManager = GameManager.inst;
+        r = gameManager.r;
     }
 
     void Update()
@@ -63,7 +65,7 @@ public abstract class Room : MonoBehaviour
 
     public void Init() {
         gameManager = GameManager.inst;
-        r = gameManager.r;
+        //r = gameManager.r;
         
         Bounds tilemapBounds = transform.Find("Grid").Find("Walls").GetComponent<Tilemap>().localBounds;
         width = tilemapBounds.extents.x * 2;
