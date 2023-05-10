@@ -90,4 +90,21 @@ public class ActiveHotbar : MonoBehaviour
             slots[i].itemSpriteContainer.GetComponent<Image>().sprite = currSlot.itemSpriteContainer.GetComponent<Image>().sprite;
         }
     }
+
+    public void SetGUI(bool isVisible) {
+        if (isVisible) {
+            foreach (Transform tran in transform) {
+                tran.gameObject.GetComponent<Image>().enabled = true;
+                tran.Find("Item").gameObject.GetComponent<Image>().enabled = true;
+            }
+        } else {
+            foreach (Transform tran in transform) {
+                tran.gameObject.GetComponent<Image>().enabled = false;
+                tran.Find("Item").gameObject.GetComponent<Image>().enabled = false;
+            }
+        }
+        
+    }
+
+
 }

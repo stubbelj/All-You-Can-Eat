@@ -8,8 +8,71 @@ public class Crafting : MonoBehaviour
     Slot[] ingredientSlots = new Slot[3];
     Slot resultsSlot;
     Dictionary<string[], string> craftingDict = new Dictionary<string[], string>{
-        {new string[]{"tomato", "tomato", "blank"}, "tomatoSoup"}
+        //tomato, mushroom, garlic, carrot, butter, onion, potato, egg
+        {new string[]{"tomato", "tomato", "blank"}, "tomatoSoup"},
+        {new string[]{"tomato", "egg", "blank"}, ""},
+        {new string[]{"tomato", "potato", "blank"}, ""},
+        {new string[]{"tomato", "onion", "blank"}, "stirFryVeggies"},
+        {new string[]{"tomato", "butter", "blank"}, ""},
+        {new string[]{"tomato", "carrot", "blank"}, "stirFryVeggies"},
+        {new string[]{"tomato", "garlic", "blank"}, "stirFryVeggies"},
+        {new string[]{"mushroom", "mushroom", "blank"}, "creamMushroomSoup"},
+        {new string[]{"mushroom", "garlic", "blank"}, "stirFryVeggies"},
+        {new string[]{"mushroom", "carrot", "blank"}, "stirFryVeggies"},
+        {new string[]{"mushroom", "butter", "blank"}, ""},
+        {new string[]{"mushroom", "onion", "blank"}, "stirFryVeggies"},
+        {new string[]{"mushroom", "potato", "blank"}, ""},
+        {new string[]{"mushroom", "egg", "blank"}, ""},
+        {new string[]{"garlic", "garlic", "blank"}, ""},
+        {new string[]{"garlic", "carrot", "blank"}, "stirFryVeggies"},
+        {new string[]{"garlic", "butter", "blank"}, ""},
+        {new string[]{"garlic", "onion", "blank"}, ""},
+        {new string[]{"garlic", "potato", "blank"}, ""},
+        {new string[]{"garlic", "egg", "blank"}, ""},
+        {new string[]{"carrot", "carrot", "blank"}, "carrotSoup"},
+        {new string[]{"carrot", "butter", "blank"}, ""},
+        {new string[]{"carrot", "onion", "blank"}, "stirFryVeggies"},
+        {new string[]{"carrot", "potato", "blank"}, ""},
+        {new string[]{"carrot", "egg", "blank"}, ""},
+        {new string[]{"butter", "butter", "blank"}, ""},
+        {new string[]{"butter", "onion", "blank"}, ""},
+        {new string[]{"butter", "potato", "blank"}, ""},
+        {new string[]{"onion", "onion", "blank"}, ""},
+        {new string[]{"onion", "potato", "blank"}, ""},
+        {new string[]{"onion", "egg", "blank"}, ""},
+        {new string[]{"potato", "potato", "blank"}, ""},
+        {new string[]{"egg", "egg", "blank"}, "twoEggs"},
     };
+
+    /*
+    20 total effects
+    8c2 = 28
+    just don't implement one of the ingredients?
+
+    10 flat stat buffs
+    +1 HP
+    +1 MS
+    +1 AD
+    +1 AS
+    +2 MS -1 AD
+    +2 MS -1 AS
+    +2 AD -1 MS 
+    +2 AD -1 AS
+    +2 AS -1 MS
+    +2 AS -1 AD
+
+    10 temp effects
+    +1 heal
+    +2 MS
+    +2 AD
+    +2 AS
+    +3 MS -1 AD
+    +3 MS -1 AS
+    +3 AD -1 MS 
+    +3 AD -1 AS
+    +3 AS -1 MS
+    +3 AS -1 AD
+    */
 
     void Awake() {
         ingredientSlots[0] = transform.Find("Slot").gameObject.GetComponent<Slot>();
@@ -24,7 +87,7 @@ public class Crafting : MonoBehaviour
     }
 
     public void Cook() {
-        print("cookery");
+        print("just cooked up a dish!");
         List<string> ingred = new List<string>();
         foreach (Slot slot in ingredientSlots) {
             ingred.Add(slot.item.itemName);

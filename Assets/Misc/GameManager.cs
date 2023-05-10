@@ -54,7 +54,10 @@ public class GameManager : MonoBehaviour
 
     public IEnumerator LateStart() {
         yield return new WaitForSeconds(0.5f);
-        InitLevel();
+        //InitLevel();
+        player.inventory.AddItem("cleaver");
+        player.inventory.AddItem("tomato");
+        player.inventory.AddItem("tomato");
     }
 
     // Update is called once per frame

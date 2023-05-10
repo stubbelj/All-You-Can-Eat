@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Cleaver : Weapon
 {
+
     public Collider2D[] colliders = new Collider2D[3];
     
     void Start() {
@@ -19,17 +20,18 @@ public class Cleaver : Weapon
     public override IEnumerator Attack() {
         if (attackCooldown == 0) {
             attacking = true;
-            attackCooldown = 0.5f;
+            anim.speed = attackSpeedMod;
+            attackCooldown = 0.5f * attackSpeedMod;
             ChangeAnimationState("cleaverAttack");
             //colliders[0].enabled = true;
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.1f * attackSpeedMod);
             //colliders[0].enabled = false;
             //doesn't feel right to deal damage instantly at the beginning of the animation, so the hitboxes are disabled for the first animation frame
             colliders[1].enabled = true;
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.1f * attackSpeedMod);
             colliders[1].enabled = false;
             colliders[2].enabled = true;
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.1f * attackSpeedMod);
             colliders[2].enabled = false;
             ChangeAnimationState("cleaverIdle");
             attacking = false;
@@ -39,7 +41,7 @@ public class Cleaver : Weapon
 
     void OnCollisionEnter2D (Collision2D col) {
         if (col.gameObject.tag == "Enemy") {
-            col.gameObject.GetComponent<Enemy>().TakeDamage(weaponDamage);
+            col.gameObject.GetComponent<Enemy>().TakeDamage(weaponDamage + attackDamageMod);
         }
     }
 }

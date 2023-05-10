@@ -16,26 +16,30 @@ public class Player : MonoBehaviour
     
     GameManager gameManager;
     float moveSpeed = 1000f;
+    float moveSpeedMod = 1;
     float maxSpeed = 150f;
-    int health = 5;
+    int maxHP = 5;
+    int currHP = 5;
     float pauseDelay = 0.1f;
     SpriteRenderer sr;
     // Start is called before the first frame update
     void Start()
     {   
         gameManager = GameManager.inst;
-        healthText.text = health.ToString();
+        healthText.text = currHP.ToString();
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
         weapons = transform.Find("Weapons").gameObject;
+        currWeapon = weapons.transform.Find("cleaver").GetComponent<Weapon>();
     }
 
     // Update is called once per frame
     void Update()
     {
+
         if (Input.GetKey("w")) {
             //if the player is currently pressing down 'w'
-            rb.velocity += Vector2.up * moveSpeed * Time.deltaTime;
+            rb.velocity += Vector2.up * moveSpeed * moveSpeedMod * Time.deltaTime;
             // add to position a vector (0, 1, 0) * moveSpeed variable * time passed since last frame update
             // Time.deltaTime is important for things happening in Update() because frames are inconsistently spaced apart
             if (!currWeapon.attacking && pauseDelay == 0) {
@@ -43,19 +47,19 @@ public class Player : MonoBehaviour
             }
         }
         if (Input.GetKey("a")) {
-            rb.velocity += Vector2.left * moveSpeed * Time.deltaTime;
+            rb.velocity += Vector2.left * moveSpeed * moveSpeedMod * Time.deltaTime;
             if (!currWeapon.attacking && pauseDelay == 0) {
                 ChangeOrientation("left");
             }
         }
         if (Input.GetKey("s")) {
-            rb.velocity += Vector2.down * moveSpeed * Time.deltaTime;
+            rb.velocity += Vector2.down * moveSpeed * moveSpeedMod * Time.deltaTime;
             if (!currWeapon.attacking && pauseDelay == 0) {
                 ChangeOrientation("down");
             }
         }
         if (Input.GetKey("d")) {
-            rb.velocity += Vector2.right * moveSpeed * Time.deltaTime;
+            rb.velocity += Vector2.right * moveSpeed * moveSpeedMod * Time.deltaTime;
             if (!currWeapon.attacking && pauseDelay == 0) {
                 ChangeOrientation("right");
             }
@@ -64,8 +68,12 @@ public class Player : MonoBehaviour
         rb.velocity = Vector2.ClampMagnitude(rb.velocity, maxSpeed);
 
         if(Input.GetKey("space")) {
-            currItem.Activate();
-            //StartCoroutine(currWeapon.Attack());
+            if (itemActivateable) {
+                ItemActivateDelay();
+                print("activate!");
+                print(currItem);
+                currItem.Activate();
+            }
         }
 
         if (Input.GetKey("tab")) {
@@ -87,11 +95,12 @@ public class Player : MonoBehaviour
 
     public void TakeDamage(int damage) {
         //handle damage
-        health -= damage;
-        if (health <= 0) {
+        currHP -= damage;
+        currHP = Mathf.Clamp(currHP, 0, maxHP);
+        if (currHP <= 0) {
             Die();
         }
-        healthText.text = health.ToString();
+        healthText.text = currHP.ToString();
     }
 
     void Die() {
@@ -99,49 +108,54 @@ public class Player : MonoBehaviour
     }
     
     public void EscapePress() {
+        /*
         pauseDelay = 0.1f;
         if (Time.timeScale == 1) {
             Time.timeScale = 0;
         } else {
             Time.timeScale = 1;
             gameManager.EndDrag(true);
-        }
+        }*/
     }
 
-    bool inventoryToggleDelay = false;
+    bool inventoryToggleable = true;
+    bool itemActivateable = true;
     
     public void ToggleInventory() {
-        if (!inventoryToggleDelay) {
-            Delay(ref inventoryToggleDelay);
-            if (!inventoryMenu.activeSelf) {
-                inventoryMenu.SetActive(true);
-                activeHotbar.SetActive(false);
+        if (inventoryToggleable) {
+            InventoryToggleDelay();
+            if (!inventoryMenu.GetComponent<Inventory>().GUIVisible) {
+                inventoryMenu.GetComponent<Inventory>().SetGUI(true);
+                activeHotbar.GetComponent<ActiveHotbar>().SetGUI(false);
             } else {
-                inventoryMenu.SetActive(false);
-                activeHotbar.SetActive(true);
+                inventoryMenu.GetComponent<Inventory>().SetGUI(false);
+                activeHotbar.GetComponent<ActiveHotbar>().SetGUI(true);
                 activeHotbar.GetComponent<ActiveHotbar>().UpdateInventory();
                 if (gameManager.craftingUI.activeSelf) {
                     gameManager.craftingUI.SetActive(false);
                 }
+                gameManager.EndDrag(true);
             }
         }
     }
 
-    public void Delay(ref bool flag, float waitTime = 0.1f) {
-        IEnumerator DelayItr(bool flag, float itrWaitTime = 0.1f) {
-            flag = true;
-            yield return new WaitForSeconds(itrWaitTime);
-            flag = false;
+    public void InventoryToggleDelay() {
+        IEnumerator InventoryToggleDelayItr() {
+            yield return new WaitForSeconds(0.2f);
+            inventoryToggleable = true;
         }
-
-        if (waitTime != 0.5f) {
-            StartCoroutine(DelayItr(flag, itrWaitTime : waitTime));
-        } else {
-            StartCoroutine(DelayItr(flag));
-        }
+        inventoryToggleable = false;
+        StartCoroutine(InventoryToggleDelayItr());
     }
 
-    
+    public void ItemActivateDelay() {
+        IEnumerator ItemActivateDelayItr() {
+            yield return new WaitForSeconds(0.2f);
+            itemActivateable = true;
+        }
+        itemActivateable = false;
+        StartCoroutine(ItemActivateDelayItr());
+    }
 
     public void ChangeWeapon(string weaponName) {
         currWeapon.gameObject.SetActive(false);
@@ -172,4 +186,15 @@ public class Player : MonoBehaviour
                 break;
         }
     }
+
+    public void ApplyEffect(int ADmod = 0, float ASmod = 0, int MSmod = 0, int hpMod = 0) {
+        currWeapon.attackDamageMod += ADmod;
+        currWeapon.attackSpeedMod += ASmod;
+        moveSpeedMod += MSmod;
+        maxSpeed += MSmod;
+        maxHP += hpMod;
+        TakeDamage(-hpMod);
+    }
+
+
 }

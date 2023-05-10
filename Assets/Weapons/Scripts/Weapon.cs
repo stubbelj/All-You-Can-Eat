@@ -2,10 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Weapon : Item
+public abstract class Weapon : MonoBehaviour
 {
     //this is an abstract parent class that exists so calls can be made to weapons that inherit it for stuff like Attack()
     public bool attacking;
+    public float attackSpeedMod = 1;
+    public int attackDamageMod = 0;
 
     protected float attackCooldown;
     protected SpriteRenderer sr;
@@ -28,7 +30,7 @@ public abstract class Weapon : Item
         currAnimState = newState;
     }
 
-    public override void Activate() {
+    public void Activate() {
         StartCoroutine(Attack());
     }
 

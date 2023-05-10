@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour
 {
@@ -16,6 +17,7 @@ public class Inventory : MonoBehaviour
     public int inventoryHeight = 3;
     Slot activeDrag;
     bool dragging = false;
+    public bool GUIVisible = true;
     public List<List<Slot>> slots = new List<List<Slot>>();
     // Start is called before the first frame update
     Dictionary<(string, string), string> craftingDict = new Dictionary<(string, string), string>{
@@ -60,12 +62,9 @@ public class Inventory : MonoBehaviour
                 slots[i][inventoryHeight - 1] = newSlot.GetComponent<Slot>();
             }
         }
-        
-        AddItem("cleaver");
-        AddItem("tomato");
-        AddItem("tomato");
         gameManager.player.activeHotbar.GetComponent<ActiveHotbar>().UpdateInventory();
-        gameObject.SetActive(false);
+        gameManager.player.currItem = slots[0][inventoryHeight - 1].item;
+        SetGUI(false);
     }
 
     // Update is called once per frame
@@ -82,7 +81,7 @@ public class Inventory : MonoBehaviour
     public void AddItem(string itemName) {
         for (int i = 0; i < inventoryWidth; i++) {
             if (slots[i][inventoryHeight - 1].item.itemName == "blank"){
-                slots[i][inventoryHeight - 1].ChangeItem(slots[i][inventoryHeight - 1].item);
+                slots[i][inventoryHeight - 1].ChangeItem(itemName);
                 gameManager.player.activeHotbar.GetComponent<ActiveHotbar>().UpdateInventory();
                 return;
             }
@@ -90,7 +89,7 @@ public class Inventory : MonoBehaviour
         for (int j = 0; j < inventoryHeight - 1; j++) {
             for (int i = 0; i < inventoryWidth; i++) {
                 if (slots[i][j].item.itemName == "blank"){
-                    slots[i][j].ChangeItem(slots[i][j].item);
+                    slots[i][j].ChangeItem(itemName);
                     gameManager.player.activeHotbar.GetComponent<ActiveHotbar>().UpdateInventory();
                     return;
                 }
@@ -115,14 +114,50 @@ public class Inventory : MonoBehaviour
             //print(slots[0][1].transform.position);
             Slot hoverSlot = SlotFromCoords(hoverCoords);
             if (hoverSlot != null && hoverSlot.draggable) {
-                Item tempHoverSlotItem = hoverSlot.item;
-                hoverSlot.ChangeItem(activeDrag.item);
-                activeDrag.ChangeItem(tempHoverSlotItem);
+                if (hoverSlot.item.itemName == "blank") {
+                    hoverSlot.ChangeItem(activeDrag.item);
+                    activeDrag.ChangeItem("blank");
+                } else {
+                    string tempHoverSlotItemName = hoverSlot.item.itemName;
+                    hoverSlot.ChangeItem(activeDrag.item);
+                    activeDrag.ChangeItem(tempHoverSlotItemName);
+                }
             }
         }
         activeDrag = null;
         Sprite nullSprite = null;
         gameManager.ChangeReticle(nullSprite);
+    }
+
+    public void SetGUI(bool isVisible) {
+        if (isVisible) {
+            GUIVisible = true;
+            GetComponent<Image>().enabled = true;
+            transform.Find("BG").gameObject.GetComponent<Image>().enabled = true;
+            foreach (Transform tran in transform.Find("MainInventory")) {
+                tran.gameObject.GetComponent<Image>().enabled = true;
+                tran.Find("Item").gameObject.GetComponent<Image>().enabled = true;
+            }
+            transform.Find("Hotbar").GetComponent<Image>().enabled = true;
+            foreach (Transform tran in transform.Find("Hotbar")) {
+                tran.gameObject.GetComponent<Image>().enabled = true;
+                tran.Find("Item").gameObject.GetComponent<Image>().enabled = true;
+            }
+        } else {
+            GUIVisible = false;
+            GetComponent<Image>().enabled = false;
+            transform.Find("BG").gameObject.GetComponent<Image>().enabled = false;
+            foreach (Transform tran in transform.Find("MainInventory")) {
+                tran.gameObject.GetComponent<Image>().enabled = false;
+                tran.Find("Item").gameObject.GetComponent<Image>().enabled = false;
+            }
+            transform.Find("Hotbar").GetComponent<Image>().enabled = false;
+            foreach (Transform tran in transform.Find("Hotbar")) {
+                tran.gameObject.GetComponent<Image>().enabled = false;
+                tran.Find("Item").gameObject.GetComponent<Image>().enabled = false;
+            }
+        }
+        
     }
 
     Slot SlotFromCoords(Vector2 point) {

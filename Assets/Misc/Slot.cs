@@ -12,42 +12,56 @@ public class Slot : MonoBehaviour
     public GameManager gameManager;
     public string type = "none";
     public bool draggable = true;
-    List<string> weaponList = new List<string>{
-        "tomatoClub", "slingPeas", "cleaver"
-    };
-    List<string> itemList = new List<string>{
-        "tomatoClub", "slingPeas", "cleaver"
-    };
 
     void Awake() {
         gameManager = GameManager.inst;
+        item = transform.Find("Item").GetComponent<Item>();
     }
 
     void Start() {
         gameManager = GameManager.inst;
-        item = GetComponent<Item>();
     }
 
     public void ChangeItem(Item newItem) {
         if (newItem != null) {
-            if (weaponList.Contains(newItem.itemName)) {
+            if (newItem.itemName == "cleaver") {
                 type = "weapon";
             }
             itemSpriteContainer.GetComponent<Image>().sprite = gameManager.itemSprites[gameManager.itemIndices[newItem.itemName]];
         } else {
             itemSpriteContainer.GetComponent<Image>().sprite = gameManager.itemSprites[gameManager.itemIndices["blank"]];
         }
+        if (newItem == null) {
+            Destroy(item);
+            item = gameObject.AddComponent<BlankItem>();
+        } else if (newItem.itemName == "cleaver") {
+            Destroy(item);
+            item = gameObject.AddComponent<CleaverItem>();
+        } else {
+            Destroy(item);
+            item = gameObject.AddComponent<Consumable>();
+        }
         item.ChangeItem(newItem);
     }
 
     public void ChangeItem(string newItem) {
         if (newItem != "") {
-            if (weaponList.Contains(newItem)) {
+            if (newItem == "cleaver") {
                 type = "weapon";
             }
             itemSpriteContainer.GetComponent<Image>().sprite = gameManager.itemSprites[gameManager.itemIndices[newItem]];
         } else {
             itemSpriteContainer.GetComponent<Image>().sprite = gameManager.itemSprites[gameManager.itemIndices["blank"]];
+        }
+        if (newItem == "cleaver") {
+            Destroy(item);
+            item = gameObject.AddComponent<CleaverItem>();
+        } else if (newItem == "blank") {
+            Destroy(item);
+            item = gameObject.AddComponent<BlankItem>();
+        } else {
+            Destroy(item);
+            item = gameObject.AddComponent<Consumable>();
         }
         item.ChangeItem(newItem);
     }
