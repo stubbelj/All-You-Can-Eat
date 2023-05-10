@@ -5,9 +5,6 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
-    path: Assets/Scenes/LucaScene.unity
-    guid: 1003934722d570d4c904dc437b526132
   - enabled: 0
     path: 
     guid: 00000000000000000000000000000000

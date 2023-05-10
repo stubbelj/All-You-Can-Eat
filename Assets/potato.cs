@@ -4,13 +4,11 @@ using UnityEngine;
 
 public class potato : Enemy
 {
-    public GameObject potatoWorldItem;
-
     int contactDamage = 1;
     float moveSpeed = 1000f;
     //having a variable like moveSpeed is useful for tweaking enemy behaviour!
     float maxSpeed = 100f;
-    int health = 10;
+    int health = 1;
     //squishy lil guy
 
     // Start is called before the first frame update
@@ -65,7 +63,6 @@ public class potato : Enemy
         //Collision2D col stores several things, most importantly the game object that the other collider is attached to
         if (col.gameObject.tag == "Player") {
             //tags are just a string that you can use to label objects, and are mostly so that you can assign editor stuff like "enemies don't collide with enemies"
-            print(col.gameObject.name);
             player.TakeDamage(contactDamage);
             //when this enemy collides with the player, deal contact damage to them!
         }
@@ -75,7 +72,6 @@ public class potato : Enemy
         //reduce the health of this enemy
         health -= delta;
         if (health <= 0) {
-            GameObject.Instantiate(potatoWorldItem, transform.position, Quaternion.identity);
             Destroy(gameObject);
             //destroys the gameObject this script is attached to, which will destroy the script as well
         }
