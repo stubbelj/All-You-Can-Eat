@@ -13,20 +13,21 @@ public class Player : MonoBehaviour
     public GameObject activeHotbar;
     public Rigidbody2D rb;
     public GameObject weapons;
+    public GameObject heartPrefab;
+    public Hearts hearts;
     
     GameManager gameManager;
-    float moveSpeed = 1000f;
+    float moveSpeed = 3000f;
     float moveSpeedMod = 1;
-    float maxSpeed = 150f;
-    int maxHP = 5;
-    int currHP = 5;
+    float maxSpeed = 300f;
+    public int maxHP = 5;
+    public int currHP = 5;
     float pauseDelay = 0.1f;
     SpriteRenderer sr;
     // Start is called before the first frame update
     void Start()
     {   
         gameManager = GameManager.inst;
-        healthText.text = currHP.ToString();
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
         weapons = transform.Find("Weapons").gameObject;
@@ -70,8 +71,6 @@ public class Player : MonoBehaviour
         if(Input.GetKey("space")) {
             if (itemActivateable) {
                 ItemActivateDelay();
-                print("activate!");
-                print(currItem);
                 currItem.Activate();
             }
         }
@@ -94,13 +93,14 @@ public class Player : MonoBehaviour
     }
 
     public void TakeDamage(int damage) {
+        print("take damage");
         //handle damage
         currHP -= damage;
         currHP = Mathf.Clamp(currHP, 0, maxHP);
         if (currHP <= 0) {
             Die();
         }
-        healthText.text = currHP.ToString();
+        hearts.UpdateHearts();
     }
 
     void Die() {
