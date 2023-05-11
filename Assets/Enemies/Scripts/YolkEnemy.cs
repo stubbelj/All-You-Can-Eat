@@ -25,6 +25,11 @@ public class YolkEnemy : Enemy
     {
         Vector2 dirVec = player.gameObject.transform.position - transform.position;
         if (dirVec.magnitude > 5f) {
+            if (dirVec.x > 0) {
+                GetComponent<SpriteRenderer>().flipX = false;
+            } else {
+                GetComponent<SpriteRenderer>().flipX = true;
+            }
             rb.velocity += dirVec.normalized * moveSpeed * Time.deltaTime;
             rb.velocity = Vector2.ClampMagnitude(rb.velocity, maxSpeed);
         }

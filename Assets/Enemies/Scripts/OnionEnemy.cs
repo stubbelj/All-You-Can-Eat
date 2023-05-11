@@ -13,7 +13,7 @@ public class OnionEnemy : Enemy
     float moveSpeed = 1000f;
     //having a variable like moveSpeed is useful for tweaking enemy behaviour!
     float maxSpeed = 50f;
-    int health = 3;
+    int health = 9;
     //buff lil guy
     public Sprite halfOnion, weakOnion;
     
@@ -45,6 +45,11 @@ public class OnionEnemy : Enemy
         Vector2 dirVec = player.gameObject.transform.position - transform.position;
         //create vector pointing towards player
         if (dirVec.magnitude > 5f) {
+            if (dirVec.x > 0) {
+                GetComponent<SpriteRenderer>().flipX = false;
+            } else {
+                GetComponent<SpriteRenderer>().flipX = true;
+            }
             //do not move if you are pretty much on top of player to avoid jitter
             rb.velocity += dirVec.normalized * moveSpeed * Time.deltaTime;
             //Time.deltaTime is important because frames (NOT the same as render frames, like what you mean when you say "I'm running this at 60fps") happen inconsistently
@@ -60,7 +65,7 @@ public class OnionEnemy : Enemy
     void OnCollisionEnter2D (Collision2D col) {
         //gets called every time a Collider2D component on another gameObject runs into the Collider2D on this object.
         //Collision2D col stores several things, most importantly the game object that the other collider is attached to
-        if (col.gameObject.tag == "Player") {
+        if (col.GetContact(0).collider.gameObject.tag == "Player") {
             //tags are just a string that you can use to label objects, and are mostly so that you can assign editor stuff like "enemies don't collide with enemies"
             player.TakeDamage(contactDamage);
             //when this enemy collides with the player, deal contact damage to them!

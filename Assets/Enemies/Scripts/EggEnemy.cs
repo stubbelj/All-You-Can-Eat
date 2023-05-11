@@ -25,6 +25,11 @@ public class EggEnemy : Enemy
     {
         if (!jumping) {
             Vector2 dirVec = player.gameObject.transform.position - transform.position;
+            if (dirVec.x > 0) {
+                GetComponent<SpriteRenderer>().flipX = false;
+            } else {
+                GetComponent<SpriteRenderer>().flipX = true;
+            }
             if (dirVec.magnitude > 150f) {
                 rb.velocity += dirVec.normalized * moveSpeed * Time.deltaTime;
                 rb.velocity = Vector2.ClampMagnitude(rb.velocity, maxSpeed);
@@ -48,7 +53,7 @@ public class EggEnemy : Enemy
     }
 
     void OnCollisionEnter2D (Collision2D col) {
-        if (col.gameObject.tag == "Player") {
+        if (col.GetContact(0).collider.gameObject.tag == "Player") {
             player.TakeDamage(contactDamage);
             Die();
         }
