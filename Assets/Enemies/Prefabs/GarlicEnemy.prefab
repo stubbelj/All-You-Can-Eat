@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b2e68e4232684f91add38e71beed111, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  parentRoom: {fileID: 0}
   gameManager: {fileID: 0}
   player: {fileID: 0}
   rb: {fileID: 0}
@@ -54,7 +55,7 @@ MonoBehaviour:
   - {fileID: 757204907, guid: 53d06ae47a93e724bb722c3d883f7439, type: 3}
   clove:
   - {fileID: 0}
-  ClovePrefab: {fileID: 0}
+  ClovePrefab: {fileID: 632815322471758180}
 --- !u!212 &632815322471758202
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -93,10 +94,10 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 836626337
+  m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 1258819651, guid: 0f6773e72b8e67247a4985d8fe7b7a92, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b772bf580ed744f9286188f693fd78e2, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

@@ -52,6 +52,9 @@ TagManager:
   - name: Player
     uniqueID: 2578757489
     locked: 0
+  - name: RoomProp
+    uniqueID: 1164249187
+    locked: 0
   - name: UI
     uniqueID: 1013851029
     locked: 0

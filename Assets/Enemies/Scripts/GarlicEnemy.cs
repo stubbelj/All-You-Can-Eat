@@ -31,6 +31,11 @@ public class GarlicEnemy : Enemy
         Vector2 dirVec = player.gameObject.transform.position - transform.position;
         //create vector pointing towards player
         if (dirVec.magnitude > 5f) {
+            if (dirVec.x > 0) {
+                GetComponent<SpriteRenderer>().flipX = false;
+            } else {
+                GetComponent<SpriteRenderer>().flipX = true;
+            }
             //do not move if you are pretty much on top of player to avoid jitter
             rb.velocity += dirVec.normalized * moveSpeed * Time.deltaTime;
             //Time.deltaTime is important because frames (NOT the same as render frames, like what you mean when you say "I'm running this at 60fps") happen inconsistently
