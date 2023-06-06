@@ -54,7 +54,7 @@ public class GameManager : MonoBehaviour
 
     public IEnumerator LateStart() {
         yield return new WaitForSeconds(0.5f);
-        //InitLevel();
+        InitGame();
         player.inventory.AddItem("cleaver");
         player.inventory.AddItem("tomato");
         player.inventory.AddItem("tomato");
@@ -64,6 +64,38 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         
+    }
+
+    Vector3 currRoomEndPoint = new Vector3(0, 0, 0);
+    int roomsUntilKitchen = 3;
+
+    void InitGame() {
+        InitNextRoom();
+        InitNextRoom();
+        InitNextRoom();
+        InitNextRoom();
+        InitNextRoom();
+        InitNextRoom();
+    }
+
+    void InitNextRoom() {
+        int newRoomIndex = r.Next(1, roomPrefabs.Count);
+
+        if (roomsUntilKitchen == 0) {
+            roomsUntilKitchen = 3;
+            newRoomIndex = 0;
+        }
+        //float hallwayHeight = Mathf.Abs(hallwayPrefabs[0].GetComponent<Room>().GetBounds()[1] - hallwayPrefabs[0].GetComponent<Room>().GetBounds()[0]);
+        float hallwayHeight = Mathf.Abs(hallwayPrefabs[0].GetComponent<Room>().GetBounds()[3]);
+        float newRoomHeight = Mathf.Abs(roomPrefabs[newRoomIndex].GetComponent<Room>().GetBounds()[3] * 2);
+        //print(newRoomHeight);
+        GameObject.Instantiate(hallwayPrefabs[0], new Vector3(0, currRoomEndPoint.y + hallwayHeight / 2, 0), Quaternion.identity);
+        //inst hallway
+        GameObject.Instantiate(roomPrefabs[newRoomIndex], new Vector3(0, currRoomEndPoint.y + hallwayHeight + (newRoomHeight / 2), 0), Quaternion.identity);
+        //inst room
+        currRoomEndPoint = new Vector3(0, currRoomEndPoint.y + hallwayHeight + newRoomHeight, 0);
+        
+        roomsUntilKitchen--;
     }
 
     void InitLevel() {
@@ -131,6 +163,7 @@ public class GameManager : MonoBehaviour
                         }
                         print(OverlapTransforms(currComposite.Item2, spawnedCompositeBounds));
                     }*/
+
                     float roomSizeShiftMod = 140f;
                     int j = r.Next(0, units.Length);
                     Vector3 roomShift = units[j] * roomSizeShiftMod;

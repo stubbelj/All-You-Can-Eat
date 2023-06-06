@@ -15,10 +15,8 @@ public class smallEnemyRoom : Room
     }
 
     public override void Deactivate() {
-        foreach(GameObject doorParent in doors) {
-            foreach(Transform door in doorParent.transform) {
-                door.gameObject.SetActive(false);
-            }
+        foreach(GameObject door in doors) {
+            door.SetActive(false);
         }
     }
 

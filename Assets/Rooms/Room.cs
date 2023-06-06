@@ -26,12 +26,13 @@ public abstract class Room : MonoBehaviour
     string state = "inactive";
     //inactive, active, complete
 
-    void Awake()
+    public virtual void Awake()
     {
         transforms = transform.Find("Transforms");
         foreach (Transform tran in transforms.Find("Doorways")) {
             doorways.Add(tran);
             doors.Add(tran.Find("Door").gameObject);
+            doors.Add(tran.Find("Door (1)").gameObject);
         }
     }
 
@@ -58,8 +59,8 @@ public abstract class Room : MonoBehaviour
     }
 
     public float[] GetBounds() {
-        Bounds tilemapBounds = transform.Find("Grid").Find("Walls").GetComponent<Tilemap>().localBounds;
-        bounds = new float[]{transform.position.x - tilemapBounds.extents.x, transform.position.x + tilemapBounds.extents.x, transform.position.y - tilemapBounds.extents.y, transform.position.y + tilemapBounds.extents.y};
+        BoundsInt tilemapBounds = transform.Find("Grid").Find("Walls").GetComponent<Tilemap>().cellBounds;
+        bounds = new float[]{tilemapBounds.xMin * 42, tilemapBounds.xMax * 42, tilemapBounds.yMin * 36, tilemapBounds.yMax * 36};
         return bounds;
     }
 
