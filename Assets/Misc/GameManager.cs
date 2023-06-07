@@ -71,19 +71,15 @@ public class GameManager : MonoBehaviour
 
     void InitGame() {
         InitNextRoom();
-        InitNextRoom();
-        InitNextRoom();
-        InitNextRoom();
-        InitNextRoom();
-        InitNextRoom();
     }
 
-    void InitNextRoom() {
+    public void InitNextRoom() {
         int newRoomIndex = r.Next(1, roomPrefabs.Count);
 
         if (roomsUntilKitchen == 0) {
             roomsUntilKitchen = 3;
             newRoomIndex = 0;
+            InitNextRoom();
         }
         //float hallwayHeight = Mathf.Abs(hallwayPrefabs[0].GetComponent<Room>().GetBounds()[1] - hallwayPrefabs[0].GetComponent<Room>().GetBounds()[0]);
         float hallwayHeight = Mathf.Abs(hallwayPrefabs[0].GetComponent<Room>().GetBounds()[3]);

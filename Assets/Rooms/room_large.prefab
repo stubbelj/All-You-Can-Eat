@@ -463,6 +463,10 @@ MonoBehaviour:
   doorSide: []
   roomObjects: []
   enemyPrefabs:
+  - {fileID: 4710115194665876492, guid: 44006dfff702ce44ca03beba9e802139, type: 3}
+  - {fileID: 777864791608692311, guid: 869e63e3baffeed42acdd9f6dfa63d0a, type: 3}
+  - {fileID: 8973472159595568294, guid: 8f93fc453713f458d8bd4937aecf40eb, type: 3}
+  - {fileID: 5409536648800659971, guid: 2c6875bf93d9ec34b99d2db59779c605, type: 3}
   - {fileID: 777864791608692311, guid: 869e63e3baffeed42acdd9f6dfa63d0a, type: 3}
 --- !u!1 &4807233320967807299
 GameObject:
